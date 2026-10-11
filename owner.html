@@ -205,9 +205,6 @@
                   </div>
 
                   <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <sc-if value="{{ o.repeat }}">
-                      <span style="background:#DCEDE4; color:#0C4534; border-radius:999px; padding:6px 12px; font-size:14px; font-weight:700;">عميل متكرر ({{ o.repeatCount }})</span>
-                    </sc-if>
                     <span style="background:#F1F3F2; color:#4A5A52; border-radius:999px; padding:6px 12px; font-size:14px; font-weight:700;">كاش عند الاستلام</span>
                   </div>
 
@@ -294,10 +291,6 @@
             <span>تنتظر <strong style="font-weight:700; color:#8A5A00;">{{ statPending }}</strong></span>
             <span style="color:#DDE3E0;">·</span>
             <span>مؤكد <strong style="font-weight:700; color:#17201C;">{{ statConfirmed }}</strong></span>
-            <span style="color:#DDE3E0;">·</span>
-            <span>قيمة مؤكدة <strong style="font-weight:700; color:#12604A;">{{ statConfirmedSum }}</strong></span>
-            <span style="color:#DDE3E0;">·</span>
-            <span>معلقة <strong style="font-weight:700; color:#8A5A00;">{{ statPendingSum }}</strong></span>
           </div>
         </sc-if>
         <sc-if value="{{ isDesktop }}">
@@ -309,14 +302,6 @@
             <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:4px;">
               <div style="font-size:15px; font-weight:500; color:#4A5A52;">طلبات الغد المؤكدة</div>
               <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:38px; font-weight:700; line-height:1.1;">{{ statConfirmed }}</div>
-            </div>
-            <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:4px;">
-              <div style="font-size:15px; font-weight:500; color:#4A5A52;">قيمة مؤكدة</div>
-              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:38px; font-weight:700; line-height:1.1; color:#12604A;">{{ statConfirmedSum }}</div>
-            </div>
-            <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:4px;">
-              <div style="font-size:15px; font-weight:500; color:#4A5A52;">قيمة معلقة</div>
-              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:38px; font-weight:700; line-height:1.1; color:#8A5A00;">{{ statPendingSum }}</div>
             </div>
           </div>
         </sc-if>
@@ -1044,7 +1029,7 @@ class Component extends DCLogic {
     ].sort((a, b) => (a[st.sortKey] > b[st.sortKey] ? 1 : -1) * st.sortDir);
 
     const settingsDefs = [
-      ["restaurant", "المطعم", brand, [["الاسم", brand], ["الشعار", "شعار نصي"], ["رابط الطلب", "order.link/" + "matam"]]],
+      ["restaurant", "المطعم", brand, [["الاسم", brand], ["الشعار", "شعار نصي"], ["رابط الطلب", "/r/setelkol"]]],
       ["slots", "مواعيد التوصيل والسعة", AR(3) + " فترات", capacity.map(([n, u, c]) => [n, AR(u) + " من " + AR(c)])],
       ["money", "الحد الأدنى والعملة والدفع", cur, [["الحد الأدنى للطلب", AR(60) + " " + cur], ["العملة", cur], ["طريقة الدفع", "كاش عند الاستلام"]]],
       ["cutoff", "إغلاق طلبات الغد", "١٠:٠٠ م", [["وقت الإغلاق", "١٠:٠٠ م"]]],
