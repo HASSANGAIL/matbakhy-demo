@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>مطبخ ست الكل — قائمة العميلة</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#E4E8E6; }
+  a { color:#12604A; text-decoration:none; }
+  a:hover { color:#0C4534; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline:3px solid #17201C; outline-offset:2px; border-radius:6px;
+  }
+</style>
+</helmet>
+
+<div dir="rtl" style="font-family:'IBM Plex Sans Arabic',system-ui,sans-serif; color:#17201C; font-weight:500; min-height:100vh; display:flex; flex-direction:column; align-items:center; gap:16px; padding:24px 16px 48px; box-sizing:border-box;">
+  <div style="background:#FFF7E0;border:1px solid #E8C66A;color:#5A4300;border-radius:12px;padding:10px 16px;font-size:14px;font-weight:600;max-width:860px;text-align:center;line-height:1.7">ديمو تفاعلي للتجربة — نموذج تصميم قبل الإطلاق، وبعض الشاشات تمثّل الرؤية القادمة. <a href="./" style="font-weight:700">↩ الرئيسية</a></div>
+
+
+  <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center; background:#FFF; border-radius:999px; padding:6px; box-shadow:0 1px 3px rgba(23,32,28,.12); max-width:860px;">
+    <sc-for list="{{ demos }}" as="d" hint-placeholder-count="9">
+      <button onClick="{{ d.pick }}" style="border:none; border-radius:999px; padding:10px 16px; font-family:'IBM Plex Sans Arabic'; font-size:14px; font-weight:500; cursor:pointer; background:{{ d.bg }}; color:{{ d.fg }}; min-height:44px;">{{ d.name }}</button>
+    </sc-for>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:10px; background:#FFF; border-radius:999px; padding:6px 6px 6px 16px; box-shadow:0 1px 3px rgba(23,32,28,.12);">
+    <div style="font-size:14px; font-weight:500; color:#5F6F67;">عرض الشاشة</div>
+    <div style="display:flex; gap:4px;">
+      <button onClick="{{ set360 }}" style="border:none; border-radius:999px; min-height:44px; padding:0 18px; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; cursor:pointer; background:{{ w360Bg }}; color:{{ w360Fg }};">٣٦٠</button>
+      <button onClick="{{ set390 }}" style="border:none; border-radius:999px; min-height:44px; padding:0 18px; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; cursor:pointer; background:{{ w390Bg }}; color:{{ w390Fg }};">٣٩٠</button>
+    </div>
+  </div>
+
+  <div style="width:{{ frameW }}; height:844px; background:#EDF0EE; border-radius:38px; overflow:hidden; position:relative; box-shadow:0 18px 50px rgba(23,32,28,.22); display:flex; flex-direction:column;">
+
+    <!-- الرأس -->
+    <sc-if value="{{ showHeader }}">
+      <div style="background:#12604A; color:#FFF; padding:48px 18px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex:none;">
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:25px; font-weight:700; line-height:1.15;">{{ brandName }}</div>
+          <div style="font-size:14px; font-weight:500; color:#B7D8C9;">{{ tagline }}</div>
+        </div>
+        <button onClick="{{ goTrack }}" aria-label="تابع طلبك" style="width:48px; height:48px; border:none; border-radius:999px; background:#0C4534; display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B7D8C9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+        </button>
+      </div>
+    </sc-if>
+
+    <!-- تحميل -->
+    <sc-if value="{{ isLoading }}">
+      <div style="flex:1; display:flex; flex-direction:column; gap:14px; padding:22px 18px;">
+        <div style="height:44px; border-radius:999px; background:#E1E6E3;"></div>
+        <div style="height:104px; border-radius:16px; background:#E1E6E3;"></div>
+        <div style="height:104px; border-radius:16px; background:#E5E9E7;"></div>
+        <div style="height:104px; border-radius:16px; background:#E9EDEB;"></div>
+        <div style="text-align:center; font-size:15px; font-weight:500; color:#4A5A52; margin-top:6px;">قائمة اليوم في الطريق…</div>
+      </div>
+    </sc-if>
+
+    <!-- بدون إنترنت -->
+    <sc-if value="{{ isOffline }}">
+      <div role="alert" aria-live="assertive" style="flex:1; display:flex; flex-direction:column; gap:16px; padding:110px 30px; align-items:center; text-align:center;">
+        <div style="width:84px; height:84px; border-radius:999px; background:#DCEDE4; display:flex; align-items:center; justify-content:center;">
+          <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#12604A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5.5 5.5 0 0 1 7 0"></path><circle cx="12" cy="19.5" r="1"></circle><path d="M3 3l18 18"></path></svg>
+        </div>
+        <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:23px; font-weight:700;">شغّل الإنترنت وحاول مرة أخرى</div>
+        <div style="font-size:16px; font-weight:500; color:#4A5A52; max-width:260px;">سلتك محفوظة كما تركتها.</div>
+        <button onClick="{{ goMenu }}" style="min-height:52px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; padding:0 30px; cursor:pointer;" style-hover="background:#0C4534">حاول مرة أخرى</button>
+      </div>
+    </sc-if>
+
+    <!-- القائمة -->
+    <sc-if value="{{ isMenu }}">
+      <sc-if value="{{ paused }}">
+        <div style="background:#FBE3E3; border-bottom:1px solid #C62F2F; padding:12px 18px; display:flex; flex-direction:column; gap:2px; flex:none;">
+          <div style="font-size:16px; font-weight:700; color:#8E1F1F;">المطعم لا يستقبل طلبات الآن</div>
+          <div style="font-size:14px; font-weight:500; color:#8E1F1F;">تصفّح القائمة، وارجع لاحقًا لإتمام الطلب.</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ cutoff }}">
+        <div role="status" aria-live="polite" style="background:#F1F3F2; border-bottom:1px solid #98A5A0; padding:12px 18px; display:flex; flex-direction:column; gap:4px; flex:none;">
+          <div style="font-size:16px; font-weight:700; color:#3C4A43;">انتهى استقبال طلبات الغد</div>
+          <div style="font-size:15px; font-weight:500; color:#3C4A43; text-wrap:pretty;">{{ cutoffText }}</div>
+          <div style="font-size:14px; font-weight:500; color:#3C4A43;">تصفّح القائمة كما تحب — الطلب يفتح صباحًا.</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ changeNotice }}">
+        <div style="background:#FDF0D6; border-bottom:1px solid #F2A20C; padding:12px 18px; display:flex; align-items:center; gap:10px; flex:none;">
+          <div style="flex:1; font-size:15px; font-weight:500; color:#8A5A00;">{{ changeNoticeText }}</div>
+          <button onClick="{{ dismissNotice }}" aria-label="إخفاء التنبيه" style="width:44px; height:44px; border:none; border-radius:12px; background:#FFF; color:#8A5A00; font-size:18px; cursor:pointer; flex:none;">✕</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasSaved }}">
+        <div style="padding:14px 18px 0; flex:none;">
+          <div style="background:#FFF; border:1px solid #DDE3E0; border-right:6px solid {{ savedAccent }}; border-radius:16px; padding:14px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:150px; display:flex; flex-direction:column; gap:3px;">
+              <div style="font-size:14px; font-weight:500; color:#4A5A52;">لديك طلب جارٍ</div>
+              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700;">طلب #{{ savedNo }} · <span style="color:{{ savedAccent }};">{{ savedStatus }}</span></div>
+            </div>
+            <button onClick="{{ openSaved }}" style="min-height:48px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:pointer;" style-hover="background:#0C4534">متابعة الطلب</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+        <div style="display:flex; gap:8px; padding:14px 18px; overflow-x:auto; flex:none;">
+          <sc-for list="{{ sections }}" as="s" hint-placeholder-count="3">
+            <button onClick="{{ s.pick }}" style="border:none; border-radius:999px; padding:11px 20px; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; white-space:nowrap; cursor:pointer; min-height:44px; background:{{ s.bg }}; color:{{ s.fg }};">{{ s.name }}</button>
+          </sc-for>
+        </div>
+
+        <div style="flex:1; overflow-y:auto; padding:2px 18px 150px; display:flex; flex-direction:column; gap:12px;">
+          <sc-for list="{{ items }}" as="it" hint-placeholder-count="4">
+            <div style="display:flex; align-items:center; gap:12px; background:{{ it.cardBg }}; border:1px solid {{ it.cardBorder }}; border-radius:16px; padding:14px;">
+              <div style="width:74px; height:74px; border-radius:14px; flex:none; background:#E6EAE8 center/cover no-repeat; background-image:{{ it.img }};"></div>
+              <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:0;">
+                <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700;">{{ it.name }}</div>
+                <div style="font-size:14px; font-weight:500; color:#4A5A52;">{{ it.desc }}</div>
+                <sc-if value="{{ it.inStock }}">
+                  <div style="font-size:20px; font-weight:700; color:#12604A;">{{ it.price }} <span style="font-size:14px; font-weight:500; color:#4A5A52;">{{ cur }}</span></div>
+                </sc-if>
+                <sc-if value="{{ it.soldOut }}">
+                  <div style="display:inline-flex; align-self:flex-start; align-items:center; gap:7px; background:#FFF; color:#8E1F1F; border:1px solid #C62F2F; border-radius:999px; padding:5px 12px; font-size:14px; font-weight:700; margin-top:2px;">
+                    <span style="width:8px; height:8px; border-radius:999px; background:#C62F2F;"></span>نفد اليوم
+                  </div>
+                </sc-if>
+              </div>
+
+              <sc-if value="{{ it.showAdd }}">
+                <button onClick="{{ it.add }}" aria-label="أضف {{ it.name }}" style="width:48px; height:48px; border:none; border-radius:999px; background:#12604A; color:#FFF; font-size:30px; font-weight:700; line-height:0; flex:none; cursor:pointer;" style-hover="background:#0C4534">+</button>
+              </sc-if>
+              <sc-if value="{{ it.showCount }}">
+                <div style="display:flex; align-items:center; background:#DCEDE4; border-radius:999px; padding:3px; gap:2px; flex:none;">
+                  <button onClick="{{ it.dec }}" aria-label="أنقص {{ it.name }}" style="width:44px; height:44px; border:none; border-radius:999px; background:#FFF; color:#12604A; font-size:26px; font-weight:700; line-height:0; cursor:pointer;">−</button>
+                  <div style="min-width:30px; text-align:center; font-size:20px; font-weight:700; color:#0C4534;">{{ it.qty }}</div>
+                  <button onClick="{{ it.inc }}" aria-label="زد {{ it.name }}" style="width:44px; height:44px; border:none; border-radius:999px; background:#12604A; color:#FFF; font-size:26px; font-weight:700; line-height:0; cursor:pointer;">+</button>
+                </div>
+              </sc-if>
+              <sc-if value="{{ it.soldOut }}">
+                <div aria-hidden="true" style="width:48px; height:48px; border-radius:999px; background:#E6EAE8; color:#8E9B95; display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:700; line-height:0; flex:none;">+</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <sc-if value="{{ hasCart }}">
+        <div style="position:absolute; bottom:0; right:0; left:0; background:#FFF; border-top:1px solid #DDE3E0; padding:14px 18px 24px; display:flex; align-items:center; gap:12px; box-shadow:0 -6px 20px rgba(23,32,28,.10);">
+          <div style="display:flex; flex-direction:column; gap:2px; flex:1; min-width:0;">
+            <div style="font-size:14px; font-weight:500; color:#4A5A52;">{{ cartCount }}</div>
+            <div style="font-size:22px; font-weight:700; color:#12604A;">{{ subTotal }} <span style="font-size:14px; font-weight:500; color:#4A5A52;">{{ cur }}</span></div>
+            <div style="font-size:13px; font-weight:500; color:#5F6F67;">{{ feeNote }}</div>
+          </div>
+          <sc-if value="{{ canOrder }}">
+            <button onClick="{{ openCheckout }}" style="min-height:52px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; padding:0 26px; cursor:pointer;" style-hover="background:#0C4534">إتمام الطلب</button>
+          </sc-if>
+          <sc-if value="{{ blocked }}">
+            <button disabled="{{ true }}" aria-label="{{ blockedLabel }}" style="min-height:52px; border:none; border-radius:14px; background:#DDE3E0; color:#8E9B95; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; padding:0 26px;">{{ blockedLabel }}</button>
+          </sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{ emptyCart }}">
+        <div style="position:absolute; bottom:0; right:0; left:0; background:#FFF; border-top:1px solid #DDE3E0; padding:16px 18px 26px; text-align:center; font-size:15px; font-weight:500; color:#4A5A52;">سلتك فارغة — اضغط + بجانب أي صنف لتبدأ</div>
+      </sc-if>
+    </sc-if>
+
+    <!-- إتمام الطلب: شاشة كاملة -->
+    <sc-if value="{{ isCheckout }}">
+      <div style="flex:1; display:flex; flex-direction:column; overflow:hidden; background:#EDF0EE;">
+        <div style="background:#12604A; color:#FFF; padding:48px 14px 14px; display:flex; align-items:center; gap:10px; flex:none;">
+          <button onClick="{{ goMenu }}" aria-label="رجوع للقائمة" style="width:48px; height:48px; border:none; border-radius:999px; background:#0C4534; display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+          </button>
+          <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:22px; font-weight:700;">إتمام الطلب</div>
+        </div>
+
+        <div style="flex:1; overflow-y:auto; padding:16px 16px 24px; display:flex; flex-direction:column; gap:16px;">
+
+          <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:12px;">
+            <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700;">راجع سلتك</div>
+            <sc-for list="{{ cartRows }}" as="c" hint-placeholder-count="2">
+              <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; border-bottom:1px solid #EDF0EE; padding-bottom:10px;">
+                <div style="flex:1; min-width:110px; display:flex; flex-direction:column; gap:2px;">
+                  <div style="font-size:17px; font-weight:700;">{{ c.name }}</div>
+                  <div style="font-size:14px; font-weight:500; color:#4A5A52;">{{ c.unit }} × {{ c.qty }} = {{ c.line }} {{ cur }}</div>
+                </div>
+                <div style="display:flex; align-items:center; background:#DCEDE4; border-radius:999px; padding:3px; gap:2px;">
+                  <button onClick="{{ c.dec }}" aria-label="أنقص {{ c.name }}" style="width:44px; height:44px; border:none; border-radius:999px; background:#FFF; color:#12604A; font-size:24px; font-weight:700; line-height:0; cursor:pointer;">−</button>
+                  <div style="min-width:28px; text-align:center; font-size:19px; font-weight:700; color:#0C4534;">{{ c.qty }}</div>
+                  <button onClick="{{ c.inc }}" aria-label="زد {{ c.name }}" style="width:44px; height:44px; border:none; border-radius:999px; background:#12604A; color:#FFF; font-size:24px; font-weight:700; line-height:0; cursor:pointer;">+</button>
+                </div>
+                <button onClick="{{ c.remove }}" aria-label="احذف {{ c.name }}" style="width:44px; height:44px; border:1px solid #F3D8D8; border-radius:12px; background:#FFF; color:#C62F2F; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C62F2F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"></path></svg>
+                </button>
+              </div>
+            </sc-for>
+            <button onClick="{{ goMenu }}" style="min-height:48px; border:2px solid #12604A; border-radius:12px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; cursor:pointer;" style-hover="background:#DCEDE4">أضف صنفًا آخر</button>
+          </div>
+
+          <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:14px;">
+            <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700;">بيانات التوصيل</div>
+
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <label for="cName" style="font-size:15px; font-weight:700;">الاسم</label>
+              <input id="cName" value="{{ fName }}" onChange="{{ setName }}" placeholder="اسمك بالكامل" style="min-height:52px; border:2px solid {{ bName }}; border-radius:10px; padding:0 14px; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:500; outline:none; background:#FFF;">
+              <sc-if value="{{ eName }}">
+                <div style="font-size:14px; font-weight:700; color:#C62F2F;">اكتب اسمك حتى نعرف لمن نوصّل</div>
+              </sc-if>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <label for="cPhone" style="font-size:15px; font-weight:700;">رقم الهاتف</label>
+              <input id="cPhone" value="{{ fPhone }}" onChange="{{ setPhone }}" inputmode="tel" dir="ltr" aria-describedby="cPhoneHint" placeholder="01x xxxx xxxx" style="min-height:52px; border:2px solid {{ bPhone }}; border-radius:10px; padding:0 14px; font-family:'IBM Plex Sans Arabic'; font-size:18px; font-weight:700; outline:none; background:#FFF; text-align:left;">
+              <div id="cPhoneHint" style="font-size:14px; font-weight:500; color:#5F6F67;">{{ phoneHint }}</div>
+              <sc-if value="{{ ePhone }}">
+                <div role="alert" style="font-size:14px; font-weight:700; color:#C62F2F;">{{ ePhoneText }}</div>
+              </sc-if>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <label for="cAddr" style="font-size:15px; font-weight:700;">العنوان</label>
+              <input id="cAddr" value="{{ fAddress }}" onChange="{{ setAddress }}" placeholder="الشارع، رقم العمارة، الدور" style="min-height:52px; border:2px solid {{ bAddress }}; border-radius:10px; padding:0 14px; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:500; outline:none; background:#FFF;">
+              <sc-if value="{{ eAddress }}">
+                <div style="font-size:14px; font-weight:700; color:#C62F2F;">اكتب العنوان بالتفصيل ليصل الطلب</div>
+              </sc-if>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:9px;">
+              <div style="font-size:15px; font-weight:700;">موعد التوصيل — {{ tomorrowLabel }}</div>
+              <sc-if value="{{ hasSlots }}">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <sc-for list="{{ slots }}" as="sl" hint-placeholder-count="3">
+                    <sc-if value="{{ sl.open }}">
+                      <button onClick="{{ sl.pick }}" style="min-height:52px; border:2px solid {{ sl.border }}; border-radius:10px; background:{{ sl.bg }}; color:{{ sl.fg }}; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; cursor:pointer; text-align:right; padding:0 16px; display:flex; align-items:center; gap:10px;">
+                        <span style="width:20px; height:20px; border-radius:999px; border:2px solid {{ sl.dotBorder }}; background:{{ sl.dot }}; flex:none;"></span>{{ sl.name }}
+                      </button>
+                    </sc-if>
+                    <sc-if value="{{ sl.full }}">
+                      <button disabled="{{ true }}" aria-label="{{ sl.name }} ممتلئ" style="min-height:52px; border:2px solid #C7D0CB; border-radius:10px; background:#F1F3F2; color:#3C4A43; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; text-align:right; padding:0 16px; display:flex; align-items:center; gap:10px;">
+                        <span style="width:20px; height:20px; border-radius:999px; border:2px solid #98A5A0; background:#FFF; flex:none;"></span>
+                        <span style="flex:1; text-align:right;">{{ sl.name }}</span>
+                        <span style="background:#FFF; border:1px solid #98A5A0; border-radius:999px; padding:4px 12px; font-size:14px; font-weight:700;">ممتلئ</span>
+                      </button>
+                    </sc-if>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ noSlots }}">
+                <div style="background:#F6F8F7; border:1px dashed #C7D0CB; border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:6px;">
+                  <div style="font-size:16px; font-weight:700;">لا توجد مواعيد متاحة {{ tomorrowLabel }}</div>
+                  <div style="font-size:15px; font-weight:500; color:#4A5A52;">امتلأت كل الفترات. جرّب غدًا صباحًا لحجز موعد بعد غد.</div>
+                </div>
+              </sc-if>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <div style="font-size:15px; font-weight:700;">طريقة الدفع</div>
+              <div style="min-height:52px; border:2px solid #12604A; border-radius:10px; background:#DCEDE4; color:#0C4534; display:flex; align-items:center; gap:10px; padding:0 16px; font-size:16px; font-weight:700;">
+                <span style="width:20px; height:20px; border-radius:999px; border:2px solid #12604A; background:#12604A; flex:none;"></span>كاش عند الاستلام
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <label for="cNotes" style="font-size:15px; font-weight:700;">ملاحظات <span style="font-weight:500; color:#5F6F67;">(اختياري)</span></label>
+              <textarea id="cNotes" value="{{ fNotes }}" onChange="{{ setNotes }}" placeholder="أي تفصيلة تهم المطبخ" style="min-height:76px; border:2px solid #DDE3E0; border-radius:10px; padding:12px 14px; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:500; outline:none; resize:none; background:#FFF;"></textarea>
+            </div>
+          </div>
+
+          <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:16px; font-weight:500;">
+              <span style="color:#4A5A52;">الأصناف</span><span style="font-weight:700;">{{ subTotal }} {{ cur }}</span>
+            </div>
+            <div style="height:1px; background:#DDE3E0;"></div>
+            <div style="display:flex; justify-content:space-between; align-items:baseline;">
+              <span style="font-size:16px; font-weight:700;">الإجمالي</span>
+              <span style="font-size:26px; font-weight:700; color:#12604A;">{{ total }} <span style="font-size:14px; font-weight:500; color:#4A5A52;">{{ cur }}</span></span>
+            </div>
+          </div>
+
+          <sc-if value="{{ sendFailed }}">
+            <div role="alert" aria-live="assertive" style="background:#FBE3E3; border:2px solid #C62F2F; border-radius:14px; padding:14px; font-size:15px; font-weight:500; color:#8E1F1F;">لم يصل الطلب إلى المطعم. لم يُنشأ رقم طلب، ولن يتكرر الطلب إن أعدت المحاولة.</div>
+          </sc-if>
+        </div>
+
+        <div style="flex:none; background:#FFF; border-top:1px solid #DDE3E0; padding:14px 16px 24px;">
+          <sc-if value="{{ canSubmit }}">
+            <button onClick="{{ submitOrder }}" style="width:100%; min-height:58px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700; cursor:pointer;" style-hover="background:#0C4534">{{ submitLabel }}</button>
+          </sc-if>
+          <sc-if value="{{ submitBusy }}">
+            <button disabled="{{ true }}" style="width:100%; min-height:58px; border:none; border-radius:14px; background:#DDE3E0; color:#5F6F67; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700;">جارٍ إرسال الطلب…</button>
+          </sc-if>
+          <sc-if value="{{ submitBlocked }}">
+            <button disabled="{{ true }}" style="width:100%; min-height:58px; border:none; border-radius:14px; background:#DDE3E0; color:#8E9B95; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700;">{{ blockedLabel }}</button>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- تم الإرسال -->
+    <sc-if value="{{ isSent }}">
+      <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column; align-items:center; gap:16px; padding:48px 22px 32px; text-align:center;">
+        <div style="width:84px; height:84px; border-radius:999px; background:#DCEDE4; display:flex; align-items:center; justify-content:center;">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#12604A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L10.5 13.5"></path><path d="M21 3l-6.5 18-4-8-8-4L21 3z"></path></svg>
+        </div>
+        <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:24px; font-weight:700; line-height:1.3;">تم إرسال طلبك إلى المطعم، ينتظر الموافقة</div>
+        <div style="font-size:15px; font-weight:500; color:#4A5A52;">رقم الطلب للعرض فقط</div>
+        <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:44px; font-weight:700; line-height:1; color:#12604A;">{{ orderNo }}</div>
+
+        <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:16px; width:100%; box-sizing:border-box; display:flex; flex-direction:column; gap:12px; text-align:right;">
+          <div style="font-size:15px; font-weight:700;">رابط تتبع الطلب</div>
+          <div style="background:#F6F8F7; border-radius:10px; padding:12px; font-size:13px; font-weight:500; color:#4A5A52; direction:ltr; text-align:left; word-break:break-all;">{{ trackUrl }}</div>
+          <div style="font-size:14px; font-weight:500; color:#4A5A52; text-wrap:pretty;">يفتح من أي جهاز دون تسجيل دخول. احفظه ولا تشاركه إلا مع من تثق به.</div>
+          <button onClick="{{ copyLink }}" style="min-height:52px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; cursor:pointer;" style-hover="background:#0C4534">{{ copyLabel }}</button>
+          <button onClick="{{ noop }}" style="min-height:52px; border:2px solid #12604A; border-radius:14px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; cursor:pointer;" style-hover="background:#DCEDE4">مشاركة الرابط</button>
+        </div>
+
+        <button onClick="{{ goStatus }}" style="width:100%; min-height:56px; border:none; border-radius:14px; background:#0C4534; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; cursor:pointer;">تابع طلبك</button>
+      </div>
+    </sc-if>
+
+    <!-- تابع طلبك: بحث برقم الهاتف -->
+    <sc-if value="{{ isTrack }}">
+      <div style="flex:1; overflow-y:auto; padding:20px 18px 28px; display:flex; flex-direction:column; gap:16px;">
+        <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:12px;">
+          <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:21px; font-weight:700;">ابحث عن طلبك</div>
+          <div style="font-size:15px; font-weight:500; color:#4A5A52;">اكتب رقم الطلب ورقم الهاتف الذي طلبت به، من أي جهاز.</div>
+          <label for="tNo" style="font-size:15px; font-weight:700;">رقم الطلب</label>
+          <input id="tNo" value="{{ lookupNo }}" onChange="{{ setLookupNo }}" inputmode="numeric" placeholder="١٠٤٧" style="min-height:52px; border:2px solid {{ lookupBorder }}; border-radius:10px; padding:0 14px; font-family:'IBM Plex Sans Arabic'; font-size:18px; font-weight:700; outline:none;">
+          <label for="tPhone" style="font-size:15px; font-weight:700;">رقم الهاتف</label>
+          <input id="tPhone" value="{{ lookupPhone }}" onChange="{{ setLookup }}" inputmode="tel" dir="ltr" aria-describedby="tPhoneHint" placeholder="01x xxxx xxxx" style="min-height:52px; border:2px solid {{ lookupBorder }}; border-radius:10px; padding:0 14px; font-family:'IBM Plex Sans Arabic'; font-size:18px; font-weight:700; outline:none; text-align:left;">
+          <div id="tPhoneHint" style="font-size:14px; font-weight:500; color:#5F6F67;">{{ phoneHint }}</div>
+          <sc-if value="{{ lookupErr }}">
+            <div role="alert" style="font-size:14px; font-weight:700; color:#C62F2F;">لم نتمكن من العثور على طلب بهذه البيانات.</div>
+          </sc-if>
+          <button onClick="{{ doLookup }}" style="min-height:52px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; cursor:pointer;" style-hover="background:#0C4534">عرض الطلب</button>
+        </div>
+
+        <sc-if value="{{ lookupFound }}">
+          <div role="status" aria-live="polite" style="background:#FFF; border:1px solid #DDE3E0; border-right:6px solid {{ foundAccent }}; border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:12px;">
+            <div style="font-size:15px; font-weight:700; color:#4A5A52;">تم العثور على طلبك</div>
+            <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px;">
+              <span style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700;">طلب #{{ foundNo }}</span>
+              <span style="font-size:16px; font-weight:700; color:{{ foundAccent }};">{{ foundStatus }}</span>
+            </div>
+            <button onClick="{{ openFound }}" style="min-height:52px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; cursor:pointer;" style-hover="background:#0C4534">عرض الطلب</button>
+          </div>
+        </sc-if>
+
+        <button onClick="{{ goMenu }}" style="min-height:52px; border:2px solid #12604A; border-radius:14px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; cursor:pointer;" style-hover="background:#DCEDE4">العودة للقائمة</button>
+      </div>
+    </sc-if>
+
+    <!-- حالة الطلب -->
+    <sc-if value="{{ isStatus }}">
+      <div style="flex:1; overflow-y:auto; padding:18px 16px 30px; display:flex; flex-direction:column; gap:14px;">
+
+        <div role="status" aria-live="polite" style="background:#FFF; border:1px solid #DDE3E0; border-radius:20px; padding:18px; display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <div style="font-size:15px; font-weight:500; color:#4A5A52;">رقم الطلب</div>
+            <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:24px; font-weight:700;">{{ orderNo }}</div>
+          </div>
+          <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:31px; font-weight:700; color:{{ statusColor }}; line-height:1.25;">{{ statusLabel }}</div>
+          <div style="font-size:16px; font-weight:500; color:#4A5A52;">{{ deliveryLine }}</div>
+        </div>
+
+        <sc-if value="{{ isRejected }}">
+          <div style="background:#FBE3E3; border:2px solid #C62F2F; border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:6px;">
+            <div style="font-size:15px; font-weight:700; color:#8E1F1F;">سبب الرفض من المطعم</div>
+            <div style="font-size:17px; font-weight:500; color:#8E1F1F;">{{ rejectReason }}</div>
+          </div>
+          <button onClick="{{ reorder }}" style="min-height:56px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; cursor:pointer;" style-hover="background:#0C4534">اطلب مرة أخرى</button>
+        </sc-if>
+
+        <sc-if value="{{ notRejected }}">
+          <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:20px; padding:20px 18px; display:flex; flex-direction:column;">
+            <sc-for list="{{ stages }}" as="st" hint-placeholder-count="6">
+              <div style="display:flex; gap:14px; align-items:flex-start;">
+                <div style="display:flex; flex-direction:column; align-items:center; flex:none; width:32px;">
+                  <sc-if value="{{ st.done }}">
+                    <div style="width:32px; height:32px; border-radius:999px; background:#12604A; display:flex; align-items:center; justify-content:center;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ st.current }}">
+                    <div style="width:32px; height:32px; border-radius:999px; background:#2563C9; border:5px solid #E0EAFB; box-sizing:border-box;"></div>
+                  </sc-if>
+                  <sc-if value="{{ st.next }}">
+                    <div style="width:32px; height:32px; border-radius:999px; background:#FFF; border:2px solid #DDE3E0; box-sizing:border-box;"></div>
+                  </sc-if>
+                  <sc-if value="{{ st.hasLine }}">
+                    <div style="width:2px; height:30px; background:{{ st.lineColor }};"></div>
+                  </sc-if>
+                </div>
+                <div style="padding-top:3px; padding-bottom:12px;">
+                  <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:{{ st.size }}; font-weight:700; color:{{ st.color }};">{{ st.name }}</div>
+                  <sc-if value="{{ st.hasTime }}">
+                    <div style="font-size:14px; font-weight:500; color:#5F6F67;">{{ st.time }}</div>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:20px; padding:18px; display:flex; flex-direction:column; gap:10px;">
+          <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700;">فاتورة الطلب</div>
+          <div style="display:flex; justify-content:space-between; gap:10px; font-size:15px; font-weight:500; color:#5F6F67;">
+            <span>طلب #{{ orderNo }}</span>
+            <span>أُنشئ {{ createdAt }}</span>
+          </div>
+          <div style="height:1px; background:#DDE3E0;"></div>
+          <sc-for list="{{ orderRows }}" as="r" hint-placeholder-count="2">
+            <div style="display:flex; justify-content:space-between; gap:10px; align-items:baseline; font-size:16px; font-weight:500;">
+              <span style="display:flex; flex-direction:column; gap:2px;">
+                <span>{{ r.name }} × {{ r.qty }}</span>
+                <span style="font-size:14px; color:#5F6F67;">سعر الوحدة {{ r.unit }} {{ cur }}</span>
+              </span>
+              <span style="font-weight:700;">{{ r.line }} {{ cur }}</span>
+            </div>
+          </sc-for>
+          <div style="height:1px; background:#DDE3E0;"></div>
+          <div style="display:flex; justify-content:space-between; font-size:16px; font-weight:500;">
+            <span style="color:#4A5A52;">الأصناف</span><span style="font-weight:700;">{{ orderSub }} {{ cur }}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <span style="font-size:16px; font-weight:700;">الإجمالي</span>
+            <span style="font-size:24px; font-weight:700; color:#12604A;">{{ orderTotal }} <span style="font-size:14px; font-weight:500; color:#4A5A52;">{{ cur }}</span></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:500; color:#4A5A52;">
+            <span>طريقة الدفع</span><span style="font-weight:700; color:#17201C;">كاش عند الاستلام</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; gap:12px; font-size:15px; font-weight:500; color:#4A5A52;">
+            <span>الموعد</span><span style="font-weight:700; color:#17201C; text-align:left;">{{ deliveryLine }}</span>
+          </div>
+          <sc-if value="{{ hasNotes }}">
+            <div style="display:flex; justify-content:space-between; gap:12px; font-size:15px; font-weight:500; color:#4A5A52;">
+              <span style="flex:none;">الملاحظات</span><span style="font-weight:500; color:#17201C; text-align:left;">{{ orderNotes }}</span>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:20px; padding:18px; display:flex; flex-direction:column; gap:10px;">
+          <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700;">التوصيل</div>
+          <div style="font-size:16px; font-weight:500;">{{ orderAddress }}</div>
+          <div style="font-size:16px; font-weight:500; color:#4A5A52; direction:ltr; text-align:right;">{{ maskedPhone }}</div>
+          <div style="font-size:16px; font-weight:500; color:#4A5A52;">{{ deliveryLine }}</div>
+          <div style="height:1px; background:#DDE3E0;"></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <div style="font-size:16px; font-weight:700;">{{ brandName }}</div>
+              <div style="font-size:16px; font-weight:500; color:#4A5A52; direction:ltr;">{{ brandPhone }}</div>
+            </div>
+            <button onClick="{{ noop }}" style="min-height:48px; border:2px solid #12604A; border-radius:12px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:pointer;" style-hover="background:#DCEDE4">اتصل بالمطعم</button>
+          </div>
+        </div>
+
+        <div style="font-size:13px; font-weight:500; color:#5F6F67; line-height:1.6; text-wrap:pretty; padding:0 2px;">هذه الصفحة تحتوي تفاصيل طلبك وعنوانك. لا تشارك رابطها إلا مع من تثق به.</div>
+
+        <button onClick="{{ goMenu }}" style="min-height:52px; border:2px solid #12604A; border-radius:14px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; cursor:pointer;" style-hover="background:#DCEDE4">العودة للقائمة</button>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:520,&quot;height&quot;:1000},&quot;brandName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;مطبخ ست الكل&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;tagline&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;اطلب اليوم، يصلك غدًا&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;currency&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;جنيه&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const AR = s => String(s).replace(/[0-9]/g, d => "٠١٢٣٤٥٦٧٨٩"[+d]);
+const DIG = s => String(s).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[^0-9]/g, "");
+const STAGES = ["بانتظار الموافقة", "تم القبول", "جاري التجهيز", "جاهز للتوصيل", "في الطريق", "تم التسليم"];
+const SLOTS = ["١٠ ص – ١٢ م", "١٢ م – ٣ م", "٣ م – ٦ م"];
+const FEE = 0;
+const DAYS = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+const MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+const dayAt = n => { const d = new Date(); d.setDate(d.getDate() + n); return d; };
+const dayName = d => DAYS[d.getDay()];
+const dateLabel = d => AR(d.getDate()) + " " + MONTHS[d.getMonth()];
+const PHONE_OK = p => /^01[0125][0-9]{8}$/.test(p);
+const PHONE_HINT = "سنستخدم الرقم لتأكيد الطلب والتواصل عند التوصيل";
+const PHONE_ERR = "اكتب رقم موبايل مصريًا صحيحًا من ١١ رقمًا";
+const COUNT = (n, one, two, many) => n === 1 ? one : n === 2 ? two : AR(n) + " " + many;
+const CATALOG = [
+  { id: 1, sec: "الأطباق الرئيسية", name: "محشي مشكّل", img: "https://images.unsplash.com/photo-1625683328243-92b63752a235?w=400&h=400&q=80&auto=format&fit=crop", desc: "ورق عنب وكوسة وفلفل", price: 95 },
+  { id: 2, sec: "الأطباق الرئيسية", name: "صينية مكرونة بشاميل", img: "https://images.unsplash.com/photo-1614961908593-2c6bf2bdf2ba?w=400&h=400&q=80&auto=format&fit=crop", desc: "تكفي أربعة أشخاص", price: 320 },
+  { id: 6, sec: "الأطباق الرئيسية", name: "كشري بالتقلية", img: "https://images.unsplash.com/photo-1779592639268-acee1edc1133?w=400&h=400&q=80&auto=format&fit=crop", desc: "عدس ورز ومكرونة وصلصة", price: 45 },
+  { id: 3, sec: "جانبي وحلويات", name: "ملوخية", img: "https://images.unsplash.com/photo-1712334619829-831fa0625a0f?w=400&h=400&q=80&auto=format&fit=crop", desc: "يقدّم ساخنًا", price: 40 },
+  { id: 4, sec: "جانبي وحلويات", name: "أم علي", img: "https://images.unsplash.com/photo-1649006970595-dd4809f4b0e2?w=400&h=400&q=80&auto=format&fit=crop", desc: "تحضّر صباحًا", price: 35, out: true },
+  { id: 5, sec: "المشروبات", name: "كركديه ساقع", img: "https://images.unsplash.com/photo-1654922704274-cd34f165c5e7?w=400&h=400&q=80&auto=format&fit=crop", desc: "زجاجة ٥٠٠ مل", price: 25 }
+];
+const SECTIONS = ["الأطباق الرئيسية", "جانبي وحلويات", "المشروبات"];
+const CODE_CHARS = "abcdefghjkmnpqrstuvwxyz23456789";
+const makeCode = () => Array.from({ length: 22 }, () => CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]).join("");
+
+class Component extends DCLogic {
+  state = {
+    view: "menu", demo: "normal", section: SECTIONS[0], cart: { 1: 2, 3: 1 }, frame: 390,
+    form: { name: "", phone: "", address: "", slot: 1, notes: "" },
+    errors: {}, sending: false, failed: false, copied: false, notice: "",
+    lookupPhone: "", lookupNo: "", lookupErr: false, lookupFound: false,
+    saved: { no: 1047, stage: 0 },
+    order: null, stage: 2, rejected: false,
+    rejectReason: "الصنف غير متوفر اليوم"
+  };
+
+  set = (k, v) => this.setState(s => ({ form: { ...s.form, [k]: v }, errors: { ...s.errors, [k]: false } }));
+  bump = (id, d) => this.setState(s => {
+    const c = { ...s.cart }, n = (c[id] || 0) + d;
+    if (n <= 0) delete c[id]; else c[id] = n;
+    return { cart: c };
+  });
+
+  submit = () => {
+    const f = this.state.form, phone = DIG(f.phone);
+    const errors = { name: !f.name.trim(), address: !f.address.trim(), phone: !PHONE_OK(phone) };
+    if (errors.name || errors.phone || errors.address) return this.setState({ errors });
+    this.setState({ sending: true, failed: false });
+    clearTimeout(this._s);
+    this._s = setTimeout(() => {
+      if (this.state.demo === "sendFail") return this.setState({ sending: false, failed: true });
+      const items = Object.entries(this.state.cart).map(([id, q]) => {
+        const it = CATALOG.find(x => x.id == id);
+        return { name: it.name, qty: q, price: it.price };
+      });
+      const sub = items.reduce((a, i) => a + i.price * i.qty, 0);
+      this.setState({
+        sending: false, failed: false, view: "sent", stage: 0, rejected: false,
+        order: {
+          no: 1000 + Math.floor(Math.random() * 900), code: makeCode(), items, sub, fee: FEE,
+          address: this.state.form.address, slot: SLOTS[this.state.form.slot],
+          notes: this.state.form.notes, createdAt: "الآن",
+          times: ["الآن", "", "", "", "", ""]
+        }
+      });
+    }, 1400);
+  };
+
+  componentWillUnmount() { clearTimeout(this._s); clearTimeout(this._c); }
+
+  ensureOrder() {
+    const st = this.state;
+    if (st.order) return st.order;
+    const items = st.rejected
+      ? [{ name: "محشي مشكّل", qty: 2, price: 95 }, { name: "أم علي", qty: 1, price: 35 }, { name: "ملوخية", qty: 1, price: 40 }]
+      : [{ name: "محشي مشكّل", qty: 2, price: 95 }, { name: "ملوخية", qty: 1, price: 40 }];
+    const sub = items.reduce((a, i) => a + i.price * i.qty, 0);
+    return { no: 1047, code: "k7m2xq9vt4bn8rc3ldz6ph", items, sub, fee: FEE, address: "٧ ش الجلاء، الدور الثالث", slot: SLOTS[1], phone: "01022344456", notes: "اطرق الباب، الجرس معطّل", createdAt: "١١:٤٠ ص", times: ["١١:٤٠ ص", "١١:٥٢ ص", "١٢:١٠ م", "", "", ""] };
+  }
+
+  renderVals() {
+    const st = this.state, demo = st.demo;
+    const brand = this.props.brandName ?? "مطبخ ست الكل";
+    const cur = this.props.currency ?? "جنيه";
+    const cutoff = demo === "cutoff";
+    const paused = demo === "paused" || cutoff, noSlots = demo === "noSlots";
+    const fullSlots = demo === "slotFull" ? [1] : noSlots ? [0, 1, 2] : [];
+    const o = this.ensureOrder();
+    const tmr = dayAt(1), aft = dayAt(2);
+    const tomorrowLabel = "غدًا " + dateLabel(tmr);
+    const deliveryDay = cutoff ? "بعد غد " + dayName(aft) + " " + dateLabel(aft) : tomorrowLabel;
+    const sub = Object.entries(st.cart).reduce((a, [id, q]) => a + CATALOG.find(i => i.id == id).price * q, 0);
+    const count = Object.values(st.cart).reduce((a, q) => a + q, 0);
+    const phoneOk = DIG(st.form.phone).length >= 10;
+
+    return {
+      brandName: brand, brandPhone: "010 5566 7788", cur,
+      tagline: this.props.tagline ?? "اطلب اليوم، يصلك غدًا",
+      tomorrowLabel, noop: () => {},
+      cutoffText: "انتهى استقبال طلبات غدٍ " + dayName(tmr) + ". نفتح صباح " + dayName(tmr) + " طلبات توصيل " + dayName(aft) + ".",
+      frameW: st.frame + "px",
+      w360Bg: st.frame === 360 ? "#12604A" : "transparent", w360Fg: st.frame === 360 ? "#FFF" : "#4A5A52",
+      w390Bg: st.frame === 390 ? "#12604A" : "transparent", w390Fg: st.frame === 390 ? "#FFF" : "#4A5A52",
+      set360: () => this.setState({ frame: 360 }), set390: () => this.setState({ frame: 390 }),
+      phoneHint: PHONE_HINT,
+      demos: [["normal", "عادي"], ["emptyCart", "سلة فارغة"], ["paused", "متوقف عن الاستقبال"], ["cutoff", "بعد وقت الإغلاق"], ["slotFull", "فترة ممتلئة"], ["noSlots", "لا مواعيد للغد"], ["sendFail", "فشل الإرسال"], ["track", "تابع طلبك"], ["preparing", "جاري التجهيز"], ["rejected", "مرفوض"], ["loading", "تحميل"], ["offline", "بدون اتصال"]].map(([k, name]) => ({
+        name,
+        bg: demo === k ? "#DCEDE4" : "transparent", fg: demo === k ? "#0C4534" : "#4A5A52",
+        pick: () => {
+          const base = { demo: k, sending: false, failed: false, notice: "" };
+          if (k === "emptyCart") return this.setState({ ...base, view: "menu", cart: {} });
+          if (k === "track") return this.setState({ ...base, view: "track", lookupFound: false, lookupErr: false });
+          if (k === "preparing") return this.setState({ ...base, view: "status", stage: 2, rejected: false, order: null });
+          if (k === "rejected") return this.setState({ ...base, view: "status", rejected: true, order: null });
+          if (k === "loading") return this.setState({ ...base, view: "loading" });
+          if (k === "offline") return this.setState({ ...base, view: "offline" });
+          return this.setState({ ...base, view: "menu", cart: { 1: 2, 3: 1 } });
+        }
+      })),
+      showHeader: st.view === "menu" || st.view === "track" || st.view === "status" || st.view === "sent" || st.view === "loading" || st.view === "offline",
+      isMenu: st.view === "menu", isCheckout: st.view === "checkout", isSent: st.view === "sent",
+      isStatus: st.view === "status", isTrack: st.view === "track",
+      isLoading: st.view === "loading", isOffline: st.view === "offline",
+      goMenu: () => this.setState({ view: "menu" }),
+      goTrack: () => this.setState({ view: "track", lookupFound: false, lookupErr: false }),
+      goStatus: () => this.setState({ view: "status" }),
+      paused: paused && !cutoff, cutoff, noSlots, hasSlots: !noSlots,
+
+      notice: st.notice, changeNotice: !!st.notice, changeNoticeText: st.notice,
+      dismissNotice: () => this.setState({ notice: "" }),
+
+      sections: SECTIONS.map(name => ({
+        name, pick: () => this.setState({ section: name }),
+        bg: st.section === name ? "#12604A" : "#FFF", fg: st.section === name ? "#FFF" : "#4A5A52"
+      })),
+      items: CATALOG.filter(i => i.sec === st.section).map(i => {
+        const qty = st.cart[i.id] || 0;
+        return {
+          name: i.name, img: "url(" + i.img + ")", desc: i.desc, price: AR(i.price), qty: AR(qty),
+          inStock: !i.out, soldOut: !!i.out,
+          cardBg: i.out ? "#F1F3F2" : "#FFF", cardBorder: i.out ? "#DDE3E0" : "#DDE3E0",
+          showAdd: !i.out && qty === 0, showCount: !i.out && qty > 0,
+          add: () => this.bump(i.id, 1), inc: () => this.bump(i.id, 1), dec: () => this.bump(i.id, -1)
+        };
+      }),
+      hasCart: count > 0, emptyCart: count === 0,
+      cartCount: COUNT(count, "صنف واحد", "صنفان", "أصناف"),
+      feeNote: "كاش أو تحويل محفظة/إنستاباي",
+      subTotal: AR(sub), fee: AR(FEE), total: AR(sub + FEE),
+      canOrder: !paused && !noSlots, blocked: paused || noSlots,
+      blockedLabel: cutoff ? "أُغلقت طلبات الغد" : paused ? "الطلبات متوقفة" : "لا مواعيد متاحة",
+      openCheckout: () => this.setState({ view: "checkout" }),
+
+      cartRows: Object.entries(st.cart).map(([id, q]) => {
+        const it = CATALOG.find(x => x.id == id);
+        return {
+          name: it.name, qty: AR(q), unit: AR(it.price), line: AR(it.price * q),
+          inc: () => this.bump(it.id, 1), dec: () => this.bump(it.id, -1),
+          remove: () => this.setState(s => { const c = { ...s.cart }; delete c[it.id]; return { cart: c }; })
+        };
+      }),
+      fName: st.form.name, fPhone: st.form.phone, fAddress: st.form.address, fNotes: st.form.notes,
+      setName: e => this.set("name", e.target.value),
+      setPhone: e => this.set("phone", e.target.value),
+      setAddress: e => this.set("address", e.target.value),
+      setNotes: e => this.set("notes", e.target.value),
+      eName: !!st.errors.name, eAddress: !!st.errors.address, ePhone: !!st.errors.phone,
+      ePhoneText: PHONE_ERR,
+      bName: st.errors.name ? "#C62F2F" : "#DDE3E0",
+      bPhone: st.errors.phone ? "#C62F2F" : "#DDE3E0",
+      bAddress: st.errors.address ? "#C62F2F" : "#DDE3E0",
+      slots: SLOTS.map((name, i) => {
+        const full = fullSlots.includes(i), on = st.form.slot === i && !full;
+        return {
+          name, full, open: !full, pick: () => { if (!full) this.set("slot", i); },
+          bg: full ? "#F1F3F2" : on ? "#DCEDE4" : "#FFF",
+          fg: full ? "#3C4A43" : on ? "#0C4534" : "#4A5A52",
+          border: full ? "#C7D0CB" : on ? "#12604A" : "#DDE3E0",
+          dot: on ? "#12604A" : "#FFF", dotBorder: on ? "#12604A" : "#C7D0CB"
+        };
+      }),
+      submitBusy: st.sending, sendFailed: st.failed,
+      submitBlocked: !st.sending && (paused || noSlots || count === 0),
+      canSubmit: !st.sending && !paused && !noSlots && count > 0,
+      submitLabel: st.failed ? "أعد المحاولة" : "أرسل الطلب",
+      submitOrder: this.submit,
+
+      orderNo: AR(o.no),
+      trackUrl: "tabaq.link/t/" + o.code,
+      copyLabel: st.copied ? "تم نسخ الرابط" : "نسخ الرابط",
+      copyLink: () => { this.setState({ copied: true }); clearTimeout(this._c); this._c = setTimeout(() => this.setState({ copied: false }), 3000); },
+
+      hasSaved: !!st.saved && st.view === "menu",
+      savedNo: st.saved ? AR(st.saved.no) : "",
+      savedStatus: st.saved ? STAGES[st.saved.stage] : "",
+      savedAccent: st.saved && st.saved.stage === 0 ? "#F2A20C" : "#2563C9",
+      openSaved: () => this.setState(s => ({ view: "status", stage: s.saved.stage, rejected: false })),
+      maskedPhone: (() => {
+        const p = DIG(st.form.phone) || "01022344456";
+        return p.slice(0, 3) + " •••• " + p.slice(-4);
+      })(),
+
+      lookupPhone: st.lookupPhone, lookupNo: st.lookupNo, lookupErr: st.lookupErr,
+      lookupBorder: st.lookupErr ? "#C62F2F" : "#DDE3E0",
+      setLookup: e => this.setState({ lookupPhone: e.target.value, lookupErr: false, lookupFound: false }),
+      setLookupNo: e => this.setState({ lookupNo: e.target.value, lookupErr: false, lookupFound: false }),
+      doLookup: () => {
+        const p = DIG(st.lookupPhone), n = DIG(st.lookupNo);
+        const match = PHONE_OK(p) && p === (o.phone || "01022344456") && n === String(o.no);
+        this.setState({ lookupFound: match, lookupErr: !match });
+      },
+      lookupFound: st.lookupFound,
+      foundNo: AR(o.no),
+      foundStatus: st.rejected ? "مرفوض" : STAGES[st.stage],
+      foundAccent: st.rejected ? "#C62F2F" : st.stage === 5 ? "#12604A" : "#2563C9",
+      openFound: () => this.setState({ view: "status" }),
+
+      statusLabel: st.rejected ? "مرفوض" : STAGES[st.stage],
+      statusColor: st.rejected ? "#C62F2F" : st.stage === 5 ? "#12604A" : "#2563C9",
+      deliveryLine: deliveryDay + " · " + o.slot,
+      isRejected: st.rejected, notRejected: !st.rejected,
+      rejectReason: st.rejectReason,
+      reorder: () => {
+        const keep = {}; let removed = "";
+        o.items.forEach(i => {
+          const c = CATALOG.find(x => x.name === i.name);
+          if (!c) return;
+          if (c.out) { removed = c.name; return; }
+          keep[c.id] = i.qty;
+        });
+        this.setState({
+          view: "menu", cart: keep, rejected: false, demo: "normal",
+          notice: removed ? "أزلنا «" + removed + "» من سلتك لأنه غير متاح اليوم. باقي الأصناف كما هي." : "أعدنا أصناف طلبك السابق إلى السلة."
+        });
+      },
+      stages: STAGES.map((name, i) => ({
+        name, time: o.times[i] || "",
+        hasTime: i <= st.stage && !!o.times[i],
+        done: i < st.stage, current: i === st.stage, next: i > st.stage,
+        hasLine: i < 5, lineColor: i < st.stage ? "#12604A" : "#DDE3E0",
+        color: i < st.stage ? "#17201C" : i === st.stage ? "#2563C9" : "#5F6F67",
+        size: i === st.stage ? "21px" : "18px"
+      })),
+      orderRows: o.items.map(i => ({ name: i.name, qty: AR(i.qty), unit: AR(i.price), line: AR(i.price * i.qty) })),
+      orderSub: AR(o.sub), orderFee: AR(0), orderTotal: AR(o.sub),
+      orderAddress: o.address, createdAt: o.createdAt || "الآن",
+      orderNotes: o.notes || "", hasNotes: !!(o.notes && o.notes.trim())
+    };
+  }
+}
+
+</script>
+</body>
+</html>

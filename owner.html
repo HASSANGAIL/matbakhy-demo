@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>مطبخ ست الكل — لوحة صاحبة المطبخ</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#E4E8E6; }
+  a { color:#12604A; text-decoration:none; }
+  a:hover { color:#0C4534; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible, th:focus-visible, [tabindex]:focus-visible {
+    outline:3px solid #17201C; outline-offset:2px; border-radius:6px;
+  }
+</style>
+</helmet>
+
+<div dir="rtl" style="font-family:'IBM Plex Sans Arabic',system-ui,sans-serif; color:#17201C; font-weight:500; min-height:100vh; display:flex; flex-direction:column; align-items:center; gap:16px; padding:24px 16px 56px; box-sizing:border-box;">
+  <div style="background:#FFF7E0;border:1px solid #E8C66A;color:#5A4300;border-radius:12px;padding:10px 16px;font-size:14px;font-weight:600;max-width:860px;text-align:center;line-height:1.7">ديمو تفاعلي للتجربة — نموذج تصميم قبل الإطلاق، وبعض الشاشات تمثّل الرؤية القادمة. <a href="./" style="font-weight:700">↩ الرئيسية</a></div>
+
+
+  <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center; background:#FFF; border-radius:999px; padding:6px; box-shadow:0 1px 3px rgba(23,32,28,.12); max-width:1000px;">
+    <button onClick="{{ setMobileSmall }}" style="border:none; border-radius:999px; padding:10px 18px; font-family:'IBM Plex Sans Arabic'; font-size:14px; font-weight:700; cursor:pointer; background:{{ sBg }}; color:{{ sFg }};">هاتف ٣٦٠</button>
+    <button onClick="{{ setMobile }}" style="border:none; border-radius:999px; padding:10px 18px; font-family:'IBM Plex Sans Arabic'; font-size:14px; font-weight:700; cursor:pointer; background:{{ mBg }}; color:{{ mFg }};">هاتف ٣٩٠</button>
+    <button onClick="{{ setDesktop }}" style="border:none; border-radius:999px; padding:10px 18px; font-family:'IBM Plex Sans Arabic'; font-size:14px; font-weight:700; cursor:pointer; background:{{ dBg }}; color:{{ dFg }};">حاسوب ١٤٤٠</button>
+    <sc-for list="{{ demos }}" as="d" hint-placeholder-count="8">
+      <button onClick="{{ d.pick }}" style="border:none; border-radius:999px; padding:10px 16px; font-family:'IBM Plex Sans Arabic'; font-size:14px; font-weight:500; cursor:pointer; background:{{ d.bg }}; color:{{ d.fg }};">{{ d.name }}</button>
+    </sc-for>
+  </div>
+
+  <div style="width:{{ frameW }}; max-width:100%; background:#EDF0EE; border-radius:{{ frameR }}; overflow:hidden; position:relative; box-shadow:0 18px 50px rgba(23,32,28,.20); min-height:{{ frameH }}; display:flex; flex-direction:column;">
+
+    <div style="background:#12604A; color:#FFF; padding:{{ headPad }}; display:flex; align-items:center; justify-content:space-between; gap:16px; flex:none;">
+      <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:22px; font-weight:700;">{{ brandName }}</div>
+      <div style="font-size:15px; font-weight:500; color:#B7D8C9;">{{ today }}</div>
+    </div>
+
+    <sc-if value="{{ isDesktop }}">
+      <div role="tablist" style="background:#FFF; border-bottom:1px solid #DDE3E0; padding:0 28px; display:flex; gap:4px; flex:none;">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+          <button onClick="{{ t.pick }}" role="tab" aria-selected="{{ t.selected }}" style="border:none; background:transparent; padding:16px 20px; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700; cursor:pointer; color:{{ t.color }}; border-bottom:4px solid {{ t.line }}; display:flex; align-items:center; gap:8px; min-height:44px;">
+            {{ t.name }}
+            <sc-if value="{{ t.hasBadge }}">
+              <span style="background:#F2A20C; color:#3B2600; border-radius:999px; min-width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; font-family:'IBM Plex Sans Arabic'; font-size:14px; font-weight:700; padding:0 7px;">{{ t.badge }}</span>
+            </sc-if>
+          </button>
+        </sc-for>
+        <div style="flex:1;"></div>
+        <button onClick="{{ goCustomers }}" style="border:none; background:transparent; padding:16px 18px; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:500; cursor:pointer; color:{{ custColor }}; min-height:44px;">العملاء</button>
+      </div>
+    </sc-if>
+
+    <!-- شريط الحالة الرئيسي -->
+    <div style="background:{{ barBg }}; border-bottom:1px solid {{ barBorder }}; padding:{{ barPad }}; display:flex; flex-direction:column; gap:12px; flex:none;">
+      <sc-if value="{{ isMobile }}">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="flex:1; min-width:0; display:inline-flex; align-items:center; gap:9px; background:{{ barChipBg }}; color:{{ barChipFg }}; border:2px solid {{ barChipBorder }}; border-radius:999px; padding:8px 14px; font-size:16px; font-weight:700;">
+            <span style="width:10px; height:10px; border-radius:999px; background:{{ barChipBorder }}; flex:none;"></span>{{ openLabel }}
+          </div>
+          <button onClick="{{ copyLink }}" style="flex:none; min-height:48px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 16px; cursor:pointer; display:flex; align-items:center; gap:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"></path><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"></path></svg>
+            نسخ الرابط
+          </button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isDesktop }}">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div style="display:inline-flex; align-items:center; gap:9px; background:{{ barChipBg }}; color:{{ barChipFg }}; border:2px solid {{ barChipBorder }}; border-radius:999px; padding:8px 16px; font-size:16px; font-weight:700;">
+            <span style="width:10px; height:10px; border-radius:999px; background:{{ barChipBorder }};"></span>{{ openLabel }}
+          </div>
+          <div style="font-size:15px; font-weight:500; color:#4A5A52;">{{ cutoffLine }}</div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button onClick="{{ copyLink }}" aria-label="نسخ رابط الطلب" style="min-height:48px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700; padding:0 22px; cursor:pointer; display:flex; align-items:center; gap:9px;" style-hover="background:#0C4534">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"></path><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"></path></svg>
+            نسخ رابط الطلب
+          </button>
+          <button onClick="{{ noop }}" style="min-height:48px; border:2px solid #12604A; border-radius:14px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:pointer;" style-hover="background:#DCEDE4">عرض القائمة</button>
+          <button onClick="{{ noop }}" style="min-height:48px; border:2px solid #12604A; border-radius:14px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:pointer;" style-hover="background:#DCEDE4">رمز QR</button>
+          <sc-if value="{{ showPause }}">
+            <button onClick="{{ toggleOpen }}" style="min-height:48px; border:2px solid {{ pauseBorder }}; border-radius:14px; background:#FFF; color:{{ pauseColor }}; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:pointer;">{{ pauseLabel }}</button>
+          </sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{ copied }}">
+        <div style="background:#DCEDE4; border:1px solid #12604A; border-radius:12px; padding:12px 14px; font-size:15px; font-weight:500; color:#0C4534;">تم نسخ رابط مطعمك. شاركه على واتساب أو صفحتك.</div>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ offline }}">
+      <div role="alert" aria-live="assertive" style="background:#17201C; color:#FFF; padding:14px 20px; display:flex; align-items:center; gap:12px; flex:none; flex-wrap:wrap;">
+        <span style="font-size:16px; font-weight:700;">انقطع الاتصال</span>
+        <span style="flex:1; min-width:220px; font-size:15px; font-weight:500; color:#B6C0BB; text-wrap:pretty;">تعرض اللوحة آخر بيانات محفوظة من ١١:٥٢ ص. لن تتمكن من قبول الطلبات أو تغيير حالتها حتى يعود الاتصال.</span>
+        <button onClick="{{ retry }}" style="min-height:44px; border:none; border-radius:12px; background:#F2A20C; color:#3B2600; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; padding:0 18px; cursor:pointer; margin-right:auto;">أعد المحاولة</button>
+      </div>
+    </sc-if>
+
+    <div style="flex:1; overflow-y:auto; padding:{{ bodyPad }}; display:flex; flex-direction:column; gap:18px;">
+
+      <!-- الطلبات -->
+      <sc-if value="{{ tabOrders }}">
+
+        <sc-if value="{{ hasPendingAlert }}">
+          <div style="background:#FDF0D6; border:2px solid #F2A20C; border-radius:16px; padding:16px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:180px; display:flex; flex-direction:column; gap:3px;">
+              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; color:#3B2600;">{{ pendingAlertText }}</div>
+              <div style="font-size:15px; font-weight:500; color:#8A5A00;">كلما أسرعت بالرد، قلّ إلغاء العملاء لطلباتهم.</div>
+            </div>
+            <button onClick="{{ filterPending }}" style="min-height:48px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700; padding:0 22px; cursor:pointer;" style-hover="background:#0C4534">مراجعة الآن</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ pausedBanner }}">
+          <div style="background:#FBE3E3; border:2px solid #C62F2F; border-radius:16px; padding:16px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:180px; display:flex; flex-direction:column; gap:3px;">
+              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; color:#8E1F1F;">الطلبات متوقفة الآن</div>
+              <div style="font-size:15px; font-weight:500; color:#8E1F1F;">من يفتح رابط مطعمك يرى القائمة ولا يستطيع الطلب.</div>
+            </div>
+            <button onClick="{{ toggleOpen }}" style="min-height:48px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700; padding:0 22px; cursor:pointer;">افتح الطلبات</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ cutoffPassed }}">
+          <div style="background:#F1F3F2; border:2px solid #98A5A0; border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:3px;">
+            <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; color:#3C4A43;">أُغلقت طلبات الغد تلقائيًا الساعة ١٠:٠٠ م</div>
+            <div style="font-size:15px; font-weight:500; color:#3C4A43; text-wrap:pretty;">العملاء يرون القائمة ولا يستطيعون الطلب حتى الصباح.</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ slotsFull }}">
+          <div style="background:#E0EAFB; border:2px solid #2563C9; border-radius:16px; padding:16px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:180px; display:flex; flex-direction:column; gap:3px;">
+              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; color:#123C86;">جميع مواعيد الغد ممتلئة</div>
+              <div style="font-size:15px; font-weight:500; color:#123C86;">العملاء يرون «لا توجد مواعيد» عند محاولة الطلب للغد.</div>
+            </div>
+            <button onClick="{{ goSettings }}" style="min-height:48px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700; padding:0 22px; cursor:pointer;">وسّع السعة</button>
+          </div>
+        </sc-if>
+
+        <button onClick="{{ toggleSearch }}" style="align-self:flex-start; min-height:48px; border:2px solid #DDE3E0; border-radius:14px; background:#FFF; color:#17201C; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:pointer; display:flex; align-items:center; gap:9px;" style-hover="background:#F6F8F7">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A5A52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+          بحث وتصفية {{ searchSummary }}
+        </button>
+        <sc-if value="{{ searchOpen }}">
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; align-items:center; gap:10px; background:#FFF; border:2px solid #DDE3E0; border-radius:14px; padding:0 14px; min-height:48px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5F6F67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+              <input value="{{ query }}" onChange="{{ setQuery }}" placeholder="ابحث برقم الطلب أو الاسم أو الهاتف" aria-label="بحث في الطلبات" style="flex:1; border:none; outline:none; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:500; background:transparent; min-height:44px; color:#17201C;">
+            </div>
+            <div role="tablist" aria-label="تصفية الطلبات" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:2px;">
+              <sc-for list="{{ filters }}" as="f" hint-placeholder-count="8">
+                <button onClick="{{ f.pick }}" role="tab" aria-selected="{{ f.selected }}" style="min-height:44px; white-space:nowrap; border:2px solid {{ f.border }}; border-radius:999px; background:{{ f.bg }}; color:{{ f.fg }}; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; padding:0 16px; cursor:pointer;">{{ f.name }} {{ f.count }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ noOrders }}">
+          <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:20px; padding:36px 24px; display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center;">
+            <div style="width:72px; height:72px; border-radius:999px; background:#DCEDE4; display:flex; align-items:center; justify-content:center;">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#12604A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"></path><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"></path></svg>
+            </div>
+            <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:22px; font-weight:700;">{{ emptyOrdersTitle }}</div>
+            <div style="font-size:16px; font-weight:500; color:#4A5A52; max-width:420px;">شارك رابط مطعمك على واتساب أو صفحتك ليبدأ العملاء بالطلب.</div>
+            <button onClick="{{ copyLink }}" style="min-height:52px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700; padding:0 26px; cursor:pointer;" style-hover="background:#0C4534">نسخ الرابط</button>
+          </div>
+        </sc-if>
+
+        <sc-for list="{{ orderGroups }}" as="g" hint-placeholder-count="2">
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700;">{{ g.title }}</div>
+              <div style="flex:1; height:1px; background:#DDE3E0;"></div>
+              <div style="font-size:15px; font-weight:500; color:#4A5A52;">{{ g.count }}</div>
+            </div>
+            <div style="display:grid; grid-template-columns:{{ cardCols }}; gap:14px;">
+              <sc-for list="{{ g.orders }}" as="o" hint-placeholder-count="2">
+                <div style="background:#FFF; border:1px solid #DDE3E0; border-right:6px solid {{ o.accent }}; border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:12px;">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+                    <div style="display:flex; flex-direction:column; gap:3px; min-width:150px;">
+                      <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
+                        <span style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700;">{{ o.name }}</span>
+                        <span style="font-size:15px; font-weight:700; color:#5F6F67;">#{{ o.id }}</span>
+                      </div>
+                      <div style="font-size:15px; font-weight:500; color:#4A5A52; direction:ltr; text-align:right;">{{ o.phone }}</div>
+                      <div style="font-size:15px; font-weight:500; color:#4A5A52;">{{ o.address }}</div>
+                      <div style="font-size:14px; font-weight:500; color:#5F6F67;">وصل {{ o.since }}</div>
+                    </div>
+                    <div style="display:inline-flex; align-items:center; gap:8px; background:{{ o.chipBg }}; color:{{ o.chipFg }}; border:1px solid {{ o.accent }}; border-radius:999px; padding:7px 13px; font-size:15px; font-weight:700; white-space:nowrap;">
+                      <span style="width:9px; height:9px; border-radius:999px; background:{{ o.accent }};"></span>{{ o.statusLabel }}
+                    </div>
+                  </div>
+
+                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <sc-if value="{{ o.repeat }}">
+                      <span style="background:#DCEDE4; color:#0C4534; border-radius:999px; padding:6px 12px; font-size:14px; font-weight:700;">عميل متكرر ({{ o.repeatCount }})</span>
+                    </sc-if>
+                    <span style="background:#F1F3F2; color:#4A5A52; border-radius:999px; padding:6px 12px; font-size:14px; font-weight:700;">كاش عند الاستلام</span>
+                  </div>
+
+                  <div style="background:#F6F8F7; border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:8px;">
+                    <sc-for list="{{ o.items }}" as="li" hint-placeholder-count="2">
+                      <div style="display:flex; justify-content:space-between; font-size:16px; font-weight:500;">
+                        <div>{{ li.name }}</div>
+                        <div style="font-weight:700; color:#12604A;">× {{ li.qty }}</div>
+                      </div>
+                    </sc-for>
+                    <div style="height:1px; background:#DDE3E0;"></div>
+                    <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                      <div style="font-size:15px; font-weight:500; color:#4A5A52;">الإجمالي</div>
+                      <div style="font-size:22px; font-weight:700; color:#12604A;">{{ o.total }} <span style="font-size:14px; font-weight:500; color:#4A5A52;">{{ cur }}</span></div>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; gap:14px; flex-wrap:wrap; font-size:15px; font-weight:500; color:#4A5A52;">
+                    <div style="display:flex; align-items:center; gap:7px;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5F6F67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{ o.slot }}
+                    </div>
+                    <div>آخر تغيير: {{ o.lastChange }}</div>
+                  </div>
+
+                  <sc-if value="{{ o.note }}">
+                    <div style="background:#FDF0D6; border-radius:12px; padding:12px 14px; font-size:15px; font-weight:500; color:#8A5A00;">ملاحظة العميل: {{ o.noteText }}</div>
+                  </sc-if>
+
+                  <sc-if value="{{ o.failed }}">
+                    <div style="background:#FBE3E3; border:1px solid #C62F2F; border-radius:12px; padding:12px 14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                      <div style="flex:1; min-width:160px; font-size:15px; font-weight:500; color:#8E1F1F; text-wrap:pretty;">لم يُحفظ التغيير. الطلب ما زال على حالته السابقة.</div>
+                      <button onClick="{{ o.retry }}" style="min-height:44px; border:none; border-radius:12px; background:#C62F2F; color:#FFF; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; padding:0 16px; cursor:pointer;">أعد المحاولة</button>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ o.offline }}">
+                    <div style="font-size:15px; font-weight:700; color:#3C4A43; background:#F1F3F2; border-radius:12px; padding:10px 14px;">إجراءات الطلب متوقفة حتى يعود الاتصال.</div>
+                  </sc-if>
+                  <sc-if value="{{ o.isPending }}">
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                      <button onClick="{{ o.accept }}" disabled="{{ o.actDisabled }}" style="flex:1; min-width:120px; min-height:52px; border:none; border-radius:14px; background:{{ o.acceptBg }}; color:{{ o.acceptFg }}; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700; cursor:{{ o.actCursor }};">قبول</button>
+                      <button onClick="{{ o.askReject }}" disabled="{{ o.actDisabled }}" style="flex:1; min-width:120px; min-height:52px; border:none; border-radius:14px; background:{{ o.rejectBg }}; color:{{ o.rejectFg }}; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700; cursor:{{ o.actCursor }};">رفض</button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ o.isRunning }}">
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:stretch;">
+                      <button onClick="{{ o.next }}" disabled="{{ o.actDisabled }}" style="flex:1; min-width:180px; min-height:58px; border:none; border-radius:14px; background:{{ o.acceptBg }}; color:{{ o.acceptFg }}; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700; cursor:{{ o.actCursor }};">{{ o.nextLabel }}</button>
+                      <button onClick="{{ o.askBack }}" disabled="{{ o.actDisabled }}" aria-label="رجوع خطوة واحدة" style="min-height:58px; border:2px solid {{ o.backBorder }}; border-radius:14px; background:#FFF; color:{{ o.backFg }}; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:{{ o.actCursor }};">رجوع خطوة</button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ o.isDone }}">
+                    <div style="min-height:52px; border-radius:14px; background:#DCEDE4; color:#0C4534; display:flex; align-items:center; justify-content:center; gap:10px; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700;">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0C4534" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>تم التسليم
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ o.isRejected }}">
+                    <div style="background:#FBE3E3; color:#8E1F1F; border-radius:12px; padding:12px 14px; font-size:15px; font-weight:500;">مرفوض: {{ o.rejectReason }}</div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+
+        <!-- ملخص المواعيد -->
+        <sc-if value="{{ showSchedule }}">
+          <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:12px;">
+            <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700;">مواعيد توصيل الغد</div>
+            <sc-for list="{{ schedule }}" as="s" hint-placeholder-count="3">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="font-size:16px; font-weight:500; min-width:120px;">{{ s.name }}</div>
+                <div style="flex:1; height:10px; border-radius:999px; background:#EDF0EE; overflow:hidden;">
+                  <div style="width:{{ s.pct }}; height:10px; background:{{ s.color }};"></div>
+                </div>
+                <div style="font-size:16px; font-weight:700; color:{{ s.textColor }}; min-width:74px; text-align:left;">{{ s.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- الإحصائيات -->
+        <sc-if value="{{ isMobile }}">
+          <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:16px; padding:14px 16px; display:flex; gap:8px; align-items:center; justify-content:space-between; flex-wrap:wrap; font-size:15px; font-weight:500; color:#4A5A52;">
+            <span>تنتظر <strong style="font-weight:700; color:#8A5A00;">{{ statPending }}</strong></span>
+            <span style="color:#DDE3E0;">·</span>
+            <span>مؤكد <strong style="font-weight:700; color:#17201C;">{{ statConfirmed }}</strong></span>
+            <span style="color:#DDE3E0;">·</span>
+            <span>قيمة مؤكدة <strong style="font-weight:700; color:#12604A;">{{ statConfirmedSum }}</strong></span>
+            <span style="color:#DDE3E0;">·</span>
+            <span>معلقة <strong style="font-weight:700; color:#8A5A00;">{{ statPendingSum }}</strong></span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isDesktop }}">
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px;">
+            <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:4px;">
+              <div style="font-size:15px; font-weight:500; color:#4A5A52;">تنتظر الموافقة</div>
+              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:38px; font-weight:700; line-height:1.1; color:#8A5A00;">{{ statPending }}</div>
+            </div>
+            <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:4px;">
+              <div style="font-size:15px; font-weight:500; color:#4A5A52;">طلبات الغد المؤكدة</div>
+              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:38px; font-weight:700; line-height:1.1;">{{ statConfirmed }}</div>
+            </div>
+            <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:4px;">
+              <div style="font-size:15px; font-weight:500; color:#4A5A52;">قيمة مؤكدة</div>
+              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:38px; font-weight:700; line-height:1.1; color:#12604A;">{{ statConfirmedSum }}</div>
+            </div>
+            <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:4px;">
+              <div style="font-size:15px; font-weight:500; color:#4A5A52;">قيمة معلقة</div>
+              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:38px; font-weight:700; line-height:1.1; color:#8A5A00;">{{ statPendingSum }}</div>
+            </div>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <!-- التحضير -->
+      <sc-if value="{{ tabPrep }}">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:21px; font-weight:700;">ملخص تحضير الغد</div>
+          <div style="flex:1;"></div>
+          <button onClick="{{ printList }}" style="min-height:48px; border:2px solid #12604A; border-radius:14px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 20px; cursor:pointer; display:flex; align-items:center; gap:9px;" style-hover="background:#DCEDE4">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#12604A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2"></path><rect x="7" y="14" width="10" height="7"></rect></svg>
+            طباعة
+          </button>
+        </div>
+        <div style="font-size:15px; font-weight:500; color:#4A5A52;">آخر تحديث {{ prepUpdated }} · محسوب من الطلبات المقبولة فقط</div>
+
+        <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:20px; padding:6px 22px; display:flex; flex-direction:column;">
+          <sc-for list="{{ prep }}" as="s" hint-placeholder-count="4">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:18px 0; border-bottom:1px solid #EDF0EE;">
+              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:24px; font-weight:700;">{{ s.name }}</div>
+              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:28px; font-weight:700; color:#12604A;">× {{ s.qty }}</div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ prepEmpty }}">
+            <div style="padding:28px 0; text-align:center; font-size:16px; font-weight:500; color:#4A5A52;">لا توجد طلبات مقبولة لهذا اليوم بعد.</div>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ hasMaybe }}">
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; color:#5F6F67;">احتياج محتمل</div>
+            <div style="font-size:15px; font-weight:500; color:#5F6F67;">من طلبات لم تُقبل بعد. لا تشترِها قبل الموافقة.</div>
+            <div style="background:#F6F8F7; border:1px dashed #C7D0CB; border-radius:20px; padding:6px 22px; display:flex; flex-direction:column;">
+              <sc-for list="{{ maybe }}" as="s" hint-placeholder-count="2">
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 0; border-bottom:1px solid #E6EAE8;">
+                  <div style="font-size:19px; font-weight:700; color:#4A5A52;">{{ s.name }}</div>
+                  <div style="font-size:22px; font-weight:700; color:#5F6F67;">× {{ s.qty }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <!-- القائمة -->
+      <sc-if value="{{ tabMenu }}">
+        <sc-if value="{{ noItems }}">
+          <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:20px; padding:34px 24px; display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center;">
+            <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:24px; font-weight:700;">ابدأ بأول صنف</div>
+            <div style="font-size:16px; font-weight:500; color:#4A5A52; max-width:420px;">اسم وسعر يكفيان. تستطيع إضافة الصورة والتفاصيل بعد ذلك.</div>
+            <button onClick="{{ addItem }}" style="min-height:56px; border:none; border-radius:16px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700; padding:0 28px; cursor:pointer;" style-hover="background:#0C4534">+ إضافة صنف</button>
+            <div style="height:1px; background:#DDE3E0; width:100%; margin-top:8px;"></div>
+            <div style="font-size:15px; font-weight:500; color:#4A5A52;">أقسام مقترحة، اختر أو اكتب أقسامك</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+              <sc-for list="{{ suggestedSections }}" as="s" hint-placeholder-count="4">
+                <button onClick="{{ s.add }}" style="min-height:44px; border:2px dashed #C7D0CB; border-radius:999px; background:#FFF; color:#4A5A52; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; padding:0 16px; cursor:pointer;">+ {{ s.name }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ hasItems }}">
+          <button onClick="{{ addItem }}" style="min-height:60px; border:none; border-radius:16px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:21px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;" style-hover="background:#0C4534">
+            <span style="font-size:28px; line-height:0;">+</span> إضافة صنف
+          </button>
+
+          <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+              <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700;">الأقسام</div>
+              <button onClick="{{ addSection }}" style="min-height:44px; border:2px solid #12604A; border-radius:12px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; padding:0 16px; cursor:pointer;" style-hover="background:#DCEDE4">+ قسم جديد</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <sc-for list="{{ sections }}" as="s" hint-placeholder-count="3">
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; border:1px solid #DDE3E0; border-radius:14px; padding:8px 8px 8px 8px;">
+                  <input value="{{ s.name }}" onChange="{{ s.rename }}" aria-label="اسم القسم" style="flex:1; min-width:100px; min-height:44px; border:none; outline:none; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; color:{{ s.color }}; background:transparent; padding:0 8px;">
+                  <button onClick="{{ s.toggle }}" style="min-height:44px; border:2px solid {{ s.hBorder }}; border-radius:999px; background:{{ s.hBg }}; color:{{ s.hFg }}; font-family:'IBM Plex Sans Arabic'; font-size:14px; font-weight:700; padding:0 14px; cursor:pointer; flex:none;">{{ s.hLabel }}</button>
+                  <div style="display:flex; gap:6px; flex:none;">
+                    <button onClick="{{ s.up }}" aria-label="حرّك القسم لأعلى" style="width:44px; height:44px; border:1px solid #DDE3E0; border-radius:12px; background:#FFF; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A5A52" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>
+                    </button>
+                    <button onClick="{{ s.down }}" aria-label="حرّك القسم لأسفل" style="width:44px; height:44px; border:1px solid #DDE3E0; border-radius:12px; background:#FFF; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A5A52" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"></path></svg>
+                    </button>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <sc-for list="{{ menuItems }}" as="m" hint-placeholder-count="4">
+              <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:14px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+                <div style="width:68px; height:68px; border-radius:14px; flex:none; background:repeating-linear-gradient(135deg,#E6EAE8 0 8px,#DDE3E0 8px 16px); display:flex; align-items:center; justify-content:center; font-family:ui-monospace,monospace; font-size:10px; color:#5F6F67;">صورة</div>
+                <div style="display:flex; flex-direction:column; gap:5px; flex:1; min-width:150px;">
+                  <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <span style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700;">{{ m.name }}</span>
+                    <sc-if value="{{ m.off }}">
+                      <span style="background:#FBE3E3; color:#8E1F1F; border:1px solid #C62F2F; border-radius:999px; padding:4px 12px; font-size:14px; font-weight:700;">غير متاح</span>
+                    </sc-if>
+                  </div>
+                  <div style="font-size:15px; font-weight:500; color:#4A5A52;">{{ m.sec }}</div>
+                  <sc-if value="{{ m.hasCap }}">
+                    <div style="font-size:14px; font-weight:500; color:{{ m.capColor }};">{{ m.capLine }}</div>
+                  </sc-if>
+                </div>
+                <div style="font-size:21px; font-weight:700; color:#12604A; min-width:90px;">{{ m.price }} <span style="font-size:14px; font-weight:500; color:#4A5A52;">{{ cur }}</span></div>
+                <button onClick="{{ m.toggle }}" style="min-height:44px; border:2px solid {{ m.swBorder }}; border-radius:999px; background:{{ m.swBg }}; color:{{ m.swFg }}; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; padding:0 8px 0 14px; cursor:pointer; display:flex; align-items:center; gap:9px;">
+                  <span style="width:20px; height:20px; border-radius:999px; background:{{ m.dot }};"></span>{{ m.swLabel }}
+                </button>
+
+                <sc-if value="{{ isDesktop }}">
+                  <div style="display:flex; gap:6px;">
+                    <button onClick="{{ m.up }}" aria-label="حرّك الصنف لأعلى" style="width:44px; height:44px; border:1px solid #DDE3E0; border-radius:12px; background:#FFF; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A5A52" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>
+                    </button>
+                    <button onClick="{{ m.down }}" aria-label="حرّك الصنف لأسفل" style="width:44px; height:44px; border:1px solid #DDE3E0; border-radius:12px; background:#FFF; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A5A52" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"></path></svg>
+                    </button>
+                    <button onClick="{{ m.edit }}" style="min-height:44px; border:2px solid #12604A; border-radius:12px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; padding:0 16px; cursor:pointer;" style-hover="background:#DCEDE4">تعديل</button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ isMobile }}">
+                  <button onClick="{{ m.menu }}" aria-label="خيارات الصنف" style="width:48px; height:48px; border:1px solid #DDE3E0; border-radius:12px; background:#FFF; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; color:#4A5A52;">⋯</button>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ hasArchived }}">
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; color:#4A5A52;">الأصناف المؤرشفة</div>
+            <div style="font-size:15px; font-weight:500; color:#5F6F67;">لا يراها العملاء. تظهر في الطلبات السابقة كما هي.</div>
+            <sc-for list="{{ archivedItems }}" as="a" hint-placeholder-count="1">
+              <div style="background:#F6F8F7; border:1px dashed #C7D0CB; border-radius:16px; padding:14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="flex:1; min-width:140px; display:flex; flex-direction:column; gap:2px;">
+                  <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700;">{{ a.name }}</div>
+                  <div style="font-size:15px; font-weight:500; color:#4A5A52;">{{ a.sec }} · {{ a.price }} {{ cur }}</div>
+                </div>
+                <button onClick="{{ a.restore }}" style="min-height:48px; border:2px solid #12604A; border-radius:12px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:pointer;" style-hover="background:#DCEDE4">استعادة</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <!-- الإعدادات -->
+      <sc-if value="{{ tabSettings }}">
+        <sc-for list="{{ settingsGroups }}" as="g" hint-placeholder-count="6">
+          <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; overflow:hidden;">
+            <button onClick="{{ g.toggle }}" aria-expanded="{{ g.expanded }}" style="width:100%; border:none; background:#FFF; padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer; min-height:56px; text-align:right;">
+              <span style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; color:#17201C;">{{ g.name }}</span>
+              <span style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:15px; font-weight:500; color:#4A5A52;">{{ g.summary }}</span>
+                <span style="font-size:18px; color:#5F6F67;">{{ g.chevron }}</span>
+              </span>
+            </button>
+            <sc-if value="{{ g.open }}">
+              <div style="border-top:1px solid #DDE3E0; padding:18px 20px; display:flex; flex-direction:column; gap:14px;">
+                <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3">
+                  <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:160px; display:flex; flex-direction:column; gap:2px;">
+                      <div style="font-size:16px; font-weight:700;">{{ r.label }}</div>
+                      <div style="font-size:15px; font-weight:500; color:#4A5A52;">{{ r.value }}</div>
+                    </div>
+                    <button onClick="{{ noop }}" style="min-height:44px; border:2px solid #DDE3E0; border-radius:12px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; padding:0 16px; cursor:pointer;" style-hover="background:#DCEDE4">تغيير</button>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ g.isNotif }}">
+                  <div style="background:#DCEDE4; border:1px solid #12604A; border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:6px;">
+                    <div style="display:flex; align-items:center; gap:9px;">
+                      <span style="width:10px; height:10px; border-radius:999px; background:#12604A;"></span>
+                      <span style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700; color:#0C4534;">تنبيه داخل اللوحة</span>
+                      <span style="font-size:14px; font-weight:700; color:#0C4534; background:#FFF; border-radius:999px; padding:4px 12px;">يعمل</span>
+                    </div>
+                    <div style="font-size:15px; font-weight:500; color:#0C4534;">ما دامت اللوحة مفتوحة، يظهر تنبيه الطلب الجديد أعلى الشاشة ويبقى حتى تفتح الطلبات. لا يحتاج أي إذن.</div>
+                    <button onClick="{{ testNotif }}" style="min-height:48px; border:2px solid #12604A; border-radius:12px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:pointer; align-self:flex-start; margin-top:6px;">جرّب التنبيه الآن</button>
+                  </div>
+
+                  <div style="background:{{ devBg }}; border:2px solid {{ devBorder }}; border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:8px;">
+                    <div style="display:flex; align-items:center; gap:9px; flex-wrap:wrap;">
+                      <span style="width:10px; height:10px; border-radius:999px; background:{{ devBorder }};"></span>
+                      <span style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700; color:{{ devFg }};">إشعار الجهاز</span>
+                      <span style="font-size:14px; font-weight:700; color:{{ devFg }}; background:#FFF; border-radius:999px; padding:4px 12px;">{{ devState }}</span>
+                    </div>
+                    <div style="font-size:15px; font-weight:500; color:{{ devFg }};">{{ devText }}</div>
+                    <sc-if value="{{ devHasAction }}">
+                      <button onClick="{{ noop }}" style="min-height:48px; border:none; border-radius:12px; background:#12604A; color:#FFF; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:pointer; align-self:flex-start;">{{ devAction }}</button>
+                    </sc-if>
+                  </div>
+
+                  <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <span style="font-size:14px; font-weight:500; color:#5F6F67;">معاينة حالات إشعار الجهاز:</span>
+                    <sc-for list="{{ devStates }}" as="d" hint-placeholder-count="4">
+                      <button onClick="{{ d.pick }}" style="min-height:44px; border:2px solid {{ d.border }}; border-radius:999px; background:{{ d.bg }}; color:{{ d.fg }}; font-family:'IBM Plex Sans Arabic'; font-size:14px; font-weight:700; padding:0 14px; cursor:pointer;">{{ d.name }}</button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <!-- العملاء -->
+      <sc-if value="{{ tabCustomers }}">
+        <sc-if value="{{ isDesktop }}">
+          <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:20px; overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; min-width:900px;">
+              <thead>
+                <tr>
+                  <sc-for list="{{ columns }}" as="c" hint-placeholder-count="6">
+                    <th onClick="{{ c.sort }}" tabindex="0" style="text-align:right; padding:16px 18px; font-size:15px; font-weight:700; color:{{ c.color }}; border-bottom:1px solid #DDE3E0; cursor:pointer; white-space:nowrap;">{{ c.label }} {{ c.arrow }}</th>
+                  </sc-for>
+                  <th style="border-bottom:1px solid #DDE3E0;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ customers }}" as="c" hint-placeholder-count="4">
+                  <tr>
+                    <td style="padding:16px 18px; font-size:17px; font-weight:700; border-bottom:1px solid #EDF0EE;">{{ c.name }}</td>
+                    <td style="padding:16px 18px; font-size:16px; font-weight:500; color:#4A5A52; border-bottom:1px solid #EDF0EE; direction:ltr; text-align:right;">{{ c.phone }}</td>
+                    <td style="padding:16px 18px; font-size:17px; font-weight:700; border-bottom:1px solid #EDF0EE;">{{ c.orders }}</td>
+                    <td style="padding:16px 18px; font-size:16px; font-weight:500; color:#4A5A52; border-bottom:1px solid #EDF0EE;">{{ c.last }}</td>
+                    <td style="padding:16px 18px; font-size:17px; font-weight:700; color:#12604A; border-bottom:1px solid #EDF0EE;">{{ c.avg }}</td>
+                    <td style="padding:16px 18px; font-size:16px; font-weight:500; color:#4A5A52; border-bottom:1px solid #EDF0EE;">{{ c.top }}</td>
+                    <td style="padding:10px 18px; border-bottom:1px solid #EDF0EE;">
+                      <button style="min-height:44px; border:2px solid #12604A; border-radius:12px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; padding:0 16px; cursor:pointer; white-space:nowrap;" style-hover="background:#DCEDE4">عرض مخصص</button>
+                    </td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isMobile }}">
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <sc-for list="{{ customers }}" as="c" hint-placeholder-count="4">
+              <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px;">
+                  <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700;">{{ c.name }}</div>
+                  <div style="font-size:15px; font-weight:700; color:#12604A;">{{ c.ordersPhrase }}</div>
+                </div>
+                <div style="font-size:16px; font-weight:500; color:#4A5A52; direction:ltr; text-align:right;">{{ c.phone }}</div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; font-size:14px; font-weight:500; color:#4A5A52;">
+                  <span style="background:#F1F3F2; border-radius:999px; padding:6px 12px;">آخر طلب {{ c.last }}</span>
+                  <span style="background:#F1F3F2; border-radius:999px; padding:6px 12px;">متوسط {{ c.avg }}</span>
+                  <span style="background:#F1F3F2; border-radius:999px; padding:6px 12px;">{{ c.top }}</span>
+                </div>
+                <button style="min-height:48px; border:2px solid #12604A; border-radius:12px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; cursor:pointer;" style-hover="background:#DCEDE4">عرض مخصص</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <!-- المزيد -->
+      <sc-if value="{{ tabMore }}">
+        <div style="background:#FFF; border:1px solid #DDE3E0; border-radius:18px; overflow:hidden; display:flex; flex-direction:column;">
+          <button onClick="{{ goCustomers }}" style="border:none; background:#FFF; padding:20px; text-align:right; font-family:'IBM Plex Sans Arabic'; font-size:18px; font-weight:700; color:#17201C; cursor:pointer; border-bottom:1px solid #EDF0EE; min-height:56px;">العملاء</button>
+          <button onClick="{{ noop }}" style="border:none; background:#FFF; padding:20px; text-align:right; font-family:'IBM Plex Sans Arabic'; font-size:18px; font-weight:700; color:#17201C; cursor:pointer; border-bottom:1px solid #EDF0EE; min-height:56px;">عرض القائمة كما يراها العميل</button>
+          <button onClick="{{ noop }}" style="border:none; background:#FFF; padding:20px; text-align:right; font-family:'IBM Plex Sans Arabic'; font-size:18px; font-weight:700; color:#17201C; cursor:pointer; border-bottom:1px solid #EDF0EE; min-height:56px;">رمز QR</button>
+          <sc-if value="{{ showPause }}">
+            <button onClick="{{ toggleOpen }}" style="border:none; background:#FFF; padding:20px; text-align:right; font-family:'IBM Plex Sans Arabic'; font-size:18px; font-weight:700; color:{{ pauseColor }}; cursor:pointer; border-bottom:1px solid #EDF0EE; min-height:56px; width:100%;">{{ pauseLabel }}</button>
+          </sc-if>
+          <button onClick="{{ goSettings }}" style="border:none; background:#FFF; padding:20px; text-align:right; font-family:'IBM Plex Sans Arabic'; font-size:18px; font-weight:700; color:#17201C; cursor:pointer; border-bottom:1px solid #EDF0EE; min-height:56px;">الإعدادات</button>
+          <button onClick="{{ logout }}" style="border:none; background:#FFF; padding:20px; text-align:right; font-family:'IBM Plex Sans Arabic'; font-size:18px; font-weight:700; color:#17201C; cursor:pointer; min-height:56px;">تسجيل الخروج</button>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <sc-if value="{{ isMobile }}">
+      <div role="tablist" style="background:#FFF; border-top:1px solid #DDE3E0; display:flex; flex:none;">
+        <sc-for list="{{ mobileTabs }}" as="t" hint-placeholder-count="4">
+          <button onClick="{{ t.pick }}" role="tab" aria-selected="{{ t.selected }}" style="flex:1; border:none; background:transparent; padding:10px 4px 18px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; color:{{ t.color }}; border-top:4px solid {{ t.line }}; min-height:60px;">
+            <span style="font-family:'IBM Plex Sans Arabic'; font-size:14px; font-weight:700;">{{ t.name }}</span>
+            <sc-if value="{{ t.hasBadge }}">
+              <span style="background:#F2A20C; color:#3B2600; border-radius:999px; min-width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; padding:0 6px;">{{ t.badge }}</span>
+            </sc-if>
+          </button>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- مهلة الرفض -->
+    <sc-if value="{{ undoOpen }}">
+      <div style="position:absolute; bottom:88px; left:16px; right:16px; display:flex; justify-content:center;">
+        <div role="status" aria-live="polite" style="background:#17201C; color:#FFF; border-radius:16px; padding:14px 16px; display:flex; align-items:center; gap:12px; box-shadow:0 12px 30px rgba(23,32,28,.35); max-width:560px; width:100%; box-sizing:border-box; flex-wrap:wrap;">
+          <div style="flex:1; min-width:180px; font-size:16px; font-weight:500; text-wrap:pretty;">{{ undoText }}</div>
+          <button onClick="{{ undoReject }}" style="min-height:44px; border:none; border-radius:12px; background:#F2A20C; color:#3B2600; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:pointer;">تراجع</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- تنبيه الطلبات الجديدة -->
+    <sc-if value="{{ notif }}">
+      <div style="position:absolute; top:16px; left:16px; right:16px; display:flex; justify-content:center;">
+        <div role="status" aria-live="polite" style="background:#17201C; color:#FFF; border-radius:16px; padding:14px 16px; display:flex; align-items:center; gap:12px; box-shadow:0 12px 30px rgba(23,32,28,.35); max-width:560px; width:100%; box-sizing:border-box; flex-wrap:wrap;">
+          <div style="width:44px; height:44px; border-radius:999px; background:#F2A20C; display:flex; align-items:center; justify-content:center; flex:none;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B2600" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+          </div>
+          <div style="flex:1; min-width:150px; display:flex; flex-direction:column; gap:2px;">
+            <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:18px; font-weight:700;">{{ notifTitle }}</div>
+            <div style="font-size:15px; font-weight:500; color:#B6C0BB;">{{ notifSub }}</div>
+          </div>
+          <button onClick="{{ openNotif }}" style="min-height:44px; border:none; border-radius:12px; background:#F2A20C; color:#3B2600; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 16px; cursor:pointer;">اعرضها</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- قائمة خيارات الصنف على الهاتف -->
+    <sc-if value="{{ sheetOpen }}">
+      <div style="position:absolute; inset:0; background:rgba(23,32,28,.45); display:flex; flex-direction:column; justify-content:flex-end;">
+        <div onClick="{{ closeSheet }}" style="flex:1;"></div>
+        <div data-dialog="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" style="background:#FFF; border-radius:24px 24px 0 0; padding:16px; display:flex; flex-direction:column; gap:10px;">
+          <div id="sheetTitle" style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700; padding:6px 6px 10px;">{{ sheetName }}</div>
+          <button onClick="{{ sheetEdit }}" style="min-height:56px; border:1px solid #DDE3E0; border-radius:14px; background:#FFF; color:#17201C; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; cursor:pointer; text-align:right; padding:0 16px;">تعديل الصنف</button>
+          <button onClick="{{ sheetUp }}" style="min-height:56px; border:1px solid #DDE3E0; border-radius:14px; background:#FFF; color:#17201C; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; cursor:pointer; text-align:right; padding:0 16px;">تحريك لأعلى</button>
+          <button onClick="{{ sheetDown }}" style="min-height:56px; border:1px solid #DDE3E0; border-radius:14px; background:#FFF; color:#17201C; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; cursor:pointer; text-align:right; padding:0 16px;">تحريك لأسفل</button>
+          <button onClick="{{ closeSheet }}" style="min-height:56px; border:2px solid #DDE3E0; border-radius:14px; background:#FFF; color:#4A5A52; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; cursor:pointer;">إغلاق</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- نموذج الصنف -->
+    <sc-if value="{{ formOpen }}">
+      <div style="position:absolute; inset:0; background:rgba(23,32,28,.5); display:flex; align-items:center; justify-content:center; padding:16px;">
+        <div data-dialog="form" role="dialog" aria-modal="true" aria-labelledby="formTitle" style="background:#FFF; border-radius:24px; width:560px; max-width:100%; max-height:100%; display:flex; flex-direction:column; overflow:hidden;">
+          <div style="padding:16px 20px; border-bottom:1px solid #DDE3E0; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <div id="formTitle" style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:22px; font-weight:700;">{{ formTitle }}</div>
+            <button onClick="{{ closeForm }}" aria-label="إغلاق" style="width:44px; height:44px; border:none; border-radius:999px; background:#F1F3F2; color:#4A5A52; font-size:20px; cursor:pointer;">✕</button>
+          </div>
+          <div style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px;">
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <label for="fName" style="font-size:15px; font-weight:700;">الاسم</label>
+              <input id="fName" value="{{ dName }}" onChange="{{ setDName }}" placeholder="اسم الصنف" style="min-height:52px; border:2px solid {{ dNameBorder }}; border-radius:10px; padding:0 14px; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:500; outline:none;">
+              <sc-if value="{{ dNameErr }}">
+                <div style="font-size:14px; font-weight:700; color:#C62F2F;">اكتب اسم الصنف كما يقرأه العميل</div>
+              </sc-if>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <label for="fDesc" style="font-size:15px; font-weight:700;">الوصف <span style="font-weight:500; color:#5F6F67;">(اختياري)</span></label>
+              <input id="fDesc" value="{{ dDesc }}" onChange="{{ setDDesc }}" placeholder="سطر واحد يكفي" style="min-height:52px; border:2px solid #DDE3E0; border-radius:10px; padding:0 14px; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:500; outline:none;">
+            </div>
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <label for="fPrice" style="font-size:15px; font-weight:700;">السعر ({{ cur }})</label>
+              <input id="fPrice" value="{{ dPrice }}" onChange="{{ setDPrice }}" inputmode="numeric" placeholder="٠" style="min-height:52px; border:2px solid {{ dPriceBorder }}; border-radius:10px; padding:0 14px; font-family:'IBM Plex Sans Arabic'; font-size:20px; font-weight:700; outline:none;">
+              <div style="font-size:14px; font-weight:500; color:#5F6F67;">أعداد صحيحة فقط. اكتبها بالعربية أو الإنجليزية، كلاهما مقبول.</div>
+              <sc-if value="{{ dPriceErr }}">
+                <div style="font-size:14px; font-weight:700; color:#C62F2F;">{{ dPriceMsg }}</div>
+              </sc-if>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:9px;">
+              <div style="font-size:15px; font-weight:700;">القسم</div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <sc-for list="{{ secChips }}" as="s" hint-placeholder-count="3">
+                  <button onClick="{{ s.pick }}" style="min-height:48px; border:2px solid {{ s.border }}; border-radius:999px; background:{{ s.bg }}; color:{{ s.fg }}; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:pointer;">{{ s.name }}</button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:9px;">
+              <div style="font-size:15px; font-weight:700;">الصورة <span style="font-weight:500; color:#5F6F67;">(اختياري)</span></div>
+              <div style="border:2px dashed #DDE3E0; border-radius:16px; padding:16px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+                <div style="width:64px; height:64px; border-radius:14px; flex:none; background:repeating-linear-gradient(135deg,#E6EAE8 0 8px,#DDE3E0 8px 16px);"></div>
+                <div style="flex:1; min-width:150px; font-size:15px; font-weight:500; color:#4A5A52;">أضف صورة واضحة ومربعة للصنف</div>
+                <button style="min-height:48px; border:2px solid #12604A; border-radius:12px; background:#FFF; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; padding:0 18px; cursor:pointer;" style-hover="background:#DCEDE4">اختر صورة</button>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:16px; border-top:1px solid #DDE3E0; padding-top:16px;">
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                  <div style="flex:1; min-width:140px; display:flex; flex-direction:column; gap:7px;">
+                    <label for="fMax" style="font-size:15px; font-weight:700;">الحد الأقصى اليومي</label>
+                    <input id="fMax" value="{{ dMax }}" onChange="{{ setDMax }}" inputmode="numeric" placeholder="بدون حد" style="min-height:48px; border:2px solid #DDE3E0; border-radius:10px; padding:0 12px; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; outline:none;">
+                  </div>
+                  <div style="flex:1; min-width:140px; display:flex; flex-direction:column; gap:7px;">
+                    <label for="fPrep" style="font-size:15px; font-weight:700;">مدة التحضير</label>
+                    <input id="fPrep" value="{{ dPrep }}" onChange="{{ setDPrep }}" inputmode="numeric" placeholder="بالدقائق" style="min-height:48px; border:2px solid #DDE3E0; border-radius:10px; padding:0 12px; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; outline:none;">
+                  </div>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <div style="font-size:15px; font-weight:700;">أيام التوفر</div>
+                  <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <sc-for list="{{ weekDays }}" as="w" hint-placeholder-count="7">
+                      <button onClick="{{ w.toggle }}" style="min-width:52px; min-height:44px; border:2px solid {{ w.border }}; border-radius:12px; background:{{ w.bg }}; color:{{ w.fg }}; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; cursor:pointer;">{{ w.name }}</button>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    <div style="font-size:15px; font-weight:500; color:#4A5A52;">من</div>
+                    <input value="{{ dFrom }}" onChange="{{ setDFrom }}" aria-label="بداية التوفر" style="width:110px; min-height:48px; border:2px solid #DDE3E0; border-radius:10px; padding:0 12px; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:500; outline:none;">
+                    <div style="font-size:15px; font-weight:500; color:#4A5A52;">إلى</div>
+                    <input value="{{ dTo }}" onChange="{{ setDTo }}" aria-label="نهاية التوفر" style="width:110px; min-height:48px; border:2px solid #DDE3E0; border-radius:10px; padding:0 12px; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:500; outline:none;">
+                  </div>
+                </div>
+            </div>
+
+            <sc-if value="{{ canArchive }}">
+              <div style="border-top:1px solid #DDE3E0; padding-top:16px; display:flex; flex-direction:column; gap:8px;">
+                <button onClick="{{ askArchive }}" style="min-height:48px; border:2px solid #F3D8D8; border-radius:12px; background:#FFF; color:#C62F2F; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; cursor:pointer; align-self:flex-start; padding:0 18px;">أرشفة الصنف</button>
+                <div style="font-size:14px; font-weight:500; color:#5F6F67;">يختفي من قائمة العملاء ويبقى في الطلبات السابقة.</div>
+              </div>
+            </sc-if>
+          </div>
+          <div style="border-top:1px solid #DDE3E0; padding:14px 20px; display:flex; gap:12px;">
+            <button onClick="{{ saveItem }}" style="flex:1; min-height:56px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700; cursor:pointer;" style-hover="background:#0C4534">حفظ</button>
+            <button onClick="{{ closeForm }}" style="min-height:56px; border:2px solid #DDE3E0; border-radius:14px; background:#FFF; color:#4A5A52; font-family:'IBM Plex Sans Arabic'; font-size:18px; font-weight:700; padding:0 24px; cursor:pointer;">إلغاء</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- نافذة الرفض -->
+    <sc-if value="{{ rejectOpen }}">
+      <div style="position:absolute; inset:0; background:rgba(23,32,28,.5); display:flex; align-items:center; justify-content:center; padding:16px;">
+        <div data-dialog="reject" role="dialog" aria-modal="true" aria-labelledby="rejectTitle" style="background:#FFF; border-radius:24px; width:520px; max-width:100%; max-height:100%; display:flex; flex-direction:column; overflow:hidden;">
+          <div style="padding:18px 20px; border-bottom:1px solid #DDE3E0;">
+            <div id="rejectTitle" style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:22px; font-weight:700;">رفض طلب من {{ rejectName }}؟</div>
+          </div>
+          <div style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:14px;">
+            <div style="font-size:15px; font-weight:700;">السبب</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <sc-for list="{{ rejectReasons }}" as="r" hint-placeholder-count="5">
+                <button onClick="{{ r.pick }}" style="min-height:52px; border:2px solid {{ r.border }}; border-radius:12px; background:{{ r.bg }}; color:{{ r.fg }}; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; cursor:pointer; text-align:right; padding:0 16px; display:flex; align-items:center; gap:10px;">
+                  <span style="width:20px; height:20px; border-radius:999px; border:2px solid {{ r.dotBorder }}; background:{{ r.dot }}; flex:none;"></span>{{ r.name }}
+                </button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ otherReason }}">
+              <input value="{{ rejectNote }}" onChange="{{ setRejectNote }}" placeholder="اكتب السبب كما سيصل للعميل" aria-label="سبب آخر" style="min-height:52px; border:2px solid #DDE3E0; border-radius:10px; padding:0 14px; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:500; outline:none;">
+            </sc-if>
+            <div style="background:#F6F8F7; border:1px solid #DDE3E0; border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:6px;">
+              <div style="font-size:14px; font-weight:700; color:#4A5A52;">الرسالة التي ستصل للعميل</div>
+              <div style="font-size:16px; font-weight:500; color:#17201C;">{{ rejectMessage }}</div>
+            </div>
+          </div>
+          <div style="border-top:1px solid #DDE3E0; padding:14px 20px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button onClick="{{ confirmReject }}" style="flex:1; min-width:150px; min-height:56px; border:none; border-radius:14px; background:#C62F2F; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; cursor:pointer;" style-hover="background:#8E1F1F">تأكيد الرفض</button>
+            <button onClick="{{ closeReject }}" style="min-height:56px; border:2px solid #DDE3E0; border-radius:14px; background:#FFF; color:#4A5A52; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:700; padding:0 22px; cursor:pointer;">تراجع</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- تأكيد الرجوع خطوة -->
+    <sc-if value="{{ backOpen }}">
+      <div style="position:absolute; inset:0; background:rgba(23,32,28,.5); display:flex; align-items:center; justify-content:center; padding:16px;">
+        <div data-dialog="back" role="dialog" aria-modal="true" aria-labelledby="backTitle" style="background:#FFF; border-radius:24px; width:420px; max-width:100%; padding:24px; display:flex; flex-direction:column; gap:14px;">
+          <div id="backTitle" style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:22px; font-weight:700;">الرجوع إلى «{{ backTo }}»؟</div>
+          <div style="font-size:16px; font-weight:500; color:#4A5A52;">سيُبلَّغ العميل بتغيّر حالة طلبه.</div>
+          <div style="display:flex; gap:10px; margin-top:6px; flex-wrap:wrap;">
+            <button onClick="{{ confirmBack }}" style="flex:1; min-width:130px; min-height:56px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; cursor:pointer;">نعم، ارجع</button>
+            <button onClick="{{ cancelBack }}" style="flex:1; min-width:130px; min-height:56px; border:2px solid #DDE3E0; border-radius:14px; background:#FFF; color:#4A5A52; font-family:'IBM Plex Sans Arabic'; font-size:18px; font-weight:700; cursor:pointer;">إلغاء</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- تأكيد الأرشفة -->
+    <sc-if value="{{ archiveOpen }}">
+      <div style="position:absolute; inset:0; background:rgba(23,32,28,.5); display:flex; align-items:center; justify-content:center; padding:16px;">
+        <div data-dialog="archive" role="dialog" aria-modal="true" aria-labelledby="archiveTitle" style="background:#FFF; border-radius:24px; width:420px; max-width:100%; padding:24px; display:flex; flex-direction:column; gap:14px;">
+          <div id="archiveTitle" style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:22px; font-weight:700;">أرشفة «{{ archiveName }}»؟</div>
+          <div style="font-size:16px; font-weight:500; color:#4A5A52;">يختفي من قائمة العملاء فورًا، وتبقى الطلبات السابقة كما هي. تستطيع إرجاعه لاحقًا.</div>
+          <div style="display:flex; gap:10px; margin-top:6px; flex-wrap:wrap;">
+            <button onClick="{{ confirmArchive }}" style="flex:1; min-width:130px; min-height:56px; border:none; border-radius:14px; background:#C62F2F; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:19px; font-weight:700; cursor:pointer;" style-hover="background:#8E1F1F">نعم، أرشفه</button>
+            <button onClick="{{ cancelArchive }}" style="flex:1; min-width:130px; min-height:56px; border:2px solid #DDE3E0; border-radius:14px; background:#FFF; color:#4A5A52; font-family:'IBM Plex Sans Arabic'; font-size:18px; font-weight:700; cursor:pointer;">إلغاء</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- تسجيل الدخول -->
+    <sc-if value="{{ loggedOut }}">
+      <div style="position:absolute; inset:0; background:#12604A; display:flex; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:#FFF; border-radius:24px; padding:28px 24px; width:400px; max-width:100%; box-sizing:border-box; display:flex; flex-direction:column; gap:16px;">
+          <div style="font-family:'Baloo Bhaijaan 2',sans-serif; font-size:26px; font-weight:700; line-height:1.25;">لوحة {{ brandName }}</div>
+          <div style="display:flex; flex-direction:column; gap:7px;">
+            <label for="lEmail" style="font-size:15px; font-weight:700;">البريد الإلكتروني</label>
+            <input id="lEmail" value="{{ email }}" onChange="{{ setEmail }}" dir="ltr" inputmode="email" placeholder="name@example.com" style="min-height:52px; border:2px solid {{ emailBorder }}; border-radius:10px; padding:0 14px; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:500; outline:none; text-align:left;">
+            <sc-if value="{{ emailErr }}">
+              <div style="font-size:14px; font-weight:700; color:#C62F2F;">{{ emailErrText }}</div>
+            </sc-if>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:7px;">
+            <label for="lPass" style="font-size:15px; font-weight:700;">كلمة المرور</label>
+            <div style="display:flex; align-items:center; gap:8px; border:2px solid {{ passBorder }}; border-radius:10px; padding:0 6px 0 14px; min-height:52px;">
+              <input id="lPass" type="{{ passType }}" value="{{ pass }}" onChange="{{ setPass }}" placeholder="••••••••" style="flex:1; min-height:48px; border:none; outline:none; font-family:'IBM Plex Sans Arabic'; font-size:17px; font-weight:500; background:transparent;">
+              <button onClick="{{ toggleShowPass }}" style="min-height:44px; border:none; border-radius:10px; background:#F1F3F2; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:15px; font-weight:700; padding:0 14px; cursor:pointer;">{{ showPassLabel }}</button>
+            </div>
+            <sc-if value="{{ passErr }}">
+              <div style="font-size:14px; font-weight:700; color:#C62F2F;">{{ passErrText }}</div>
+            </sc-if>
+          </div>
+          <button onClick="{{ login }}" style="min-height:56px; border:none; border-radius:14px; background:#12604A; color:#FFF; font-family:'Baloo Bhaijaan 2',sans-serif; font-size:20px; font-weight:700; cursor:pointer;" style-hover="background:#0C4534">دخول</button>
+          <button onClick="{{ noop }}" style="min-height:44px; border:none; background:transparent; color:#12604A; font-family:'IBM Plex Sans Arabic'; font-size:16px; font-weight:700; cursor:pointer;">نسيت كلمة المرور</button>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1480,&quot;height&quot;:1020},&quot;brandName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;مطبخ ست الكل&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;currency&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;جنيه&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const AR = s => String(s).replace(/[0-9]/g, d => "٠١٢٣٤٥٦٧٨٩"[+d]);
+const EN = s => String(s).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[^0-9]/g, "");
+const STAGES = ["بانتظار الموافقة", "تم القبول", "جاري التجهيز", "جاهز للتوصيل", "في الطريق", "تم التسليم"];
+const NEXT = ["", "ابدأ التجهيز", "جاهز للتوصيل", "أرسله مع المندوب", "سجّل التسليم", ""];
+const REASONS = ["الصنف غير متوفر", "الموعد ممتلئ", "العنوان خارج نطاق التوصيل", "لا يمكن تنفيذ الطلب كاملًا", "سبب آخر"];
+const PHONE_OK = p => /^01[0125][0-9]{8}$/.test(p);
+const COUNT = (n, zero, one, two, many) => n === 0 ? zero : n === 1 ? one : n === 2 ? two : AR(n) + " " + many;
+const DAYS = ["السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
+const FEE = 0;
+const SLOTS = ["١٠ ص – ١٢ م", "١٢ م – ٣ م", "٣ م – ٦ م"];
+const DEV_NOTIF = {
+  unsupported: { state: "غير مدعوم", text: "هذا المتصفح لا يدعم إشعارات الجهاز. اعتمد على التنبيه داخل اللوحة، وأبقِ الصفحة مفتوحة أثناء ساعات الطلب.", action: "", bg: "#F1F3F2", border: "#98A5A0", fg: "#3C4A43" },
+  iosHome: { state: "يحتاج خطوة على iPhone", text: "على iPhone: افتح الموقع في Safari، ثم «مشاركة» ← «إضافة إلى الشاشة الرئيسية»، وافتحه من الأيقونة. قبل ذلك لا يسمح الجهاز بطلب الإذن.", action: "أرني الخطوات", bg: "#FDF0D6", border: "#F2A20C", fg: "#8A5A00" },
+  denied: { state: "الإذن مرفوض", text: "رفضت إشعارات هذا الموقع سابقًا، ولا يمكن طلبها مرة أخرى من هنا. افتح إعدادات المتصفح ← إشعارات ← اسمح لهذا الموقع.", action: "أين أجدها؟", bg: "#FBE3E3", border: "#C62F2F", fg: "#8E1F1F" },
+  enabled: { state: "مفعّل", text: "وافق الجهاز على الإشعارات. سيصلك تنبيه بالطلب الجديد حتى واللوحة مغلقة.", action: "إرسال إشعار تجريبي", bg: "#DCEDE4", border: "#12604A", fg: "#0C4534" }
+};
+const FILTERS = [["all", "الكل"], ["p0", "ينتظر الموافقة"], ["p1", "مؤكد"], ["p2", "قيد التجهيز"], ["p3", "جاهز"], ["p4", "في الطريق"], ["p5", "مكتمل"], ["rej", "مرفوض"]];
+
+class Component extends DCLogic {
+  state = {
+    device: "mobile", mw: 390, undo: null, tab: "orders", demo: "normal", open: true, copied: false,
+    filter: "all", query: "", searchOpen: false, day: "غدًا", prepUpdated: "١١:٥٨ ص",
+    archived: [], logged: true, email: "", pass: "", showPass: false, loginErr: {},
+    devNotif: "iosHome", cutoff: false,
+    notif: 0, sheet: null, form: null, formErr: {}, adv: false, archive: null,
+    reject: null, rejectIdx: 0, rejectNote: "", edit: null, back: null,
+    settingsOpen: "restaurant", sortKey: "orders", sortDir: -1, failedId: null,
+    sections: [
+      { id: 1, name: "الأطباق الرئيسية", hidden: false },
+      { id: 2, name: "جانبي وحلويات", hidden: false },
+      { id: 3, name: "المشروبات", hidden: false }
+    ],
+    orders: [
+      { id: 1047, name: "منى عبد الله", phone: "010 2234 4456", address: "٧ ش الجلاء، الدور الثالث", items: [{ n: "محشي مشكّل", q: 2 }, { n: "ملوخية", q: 2 }], sub: 270, slot: SLOTS[1], day: "غدًا", repeat: 4, stage: 0, note: "من غير شطة", since: "منذ ٨ دقائق", changed: "١١:٥٢ ص", reason: "" },
+      { id: 1046, name: "أحمد شوقي", phone: "011 5567 8890", address: "١٢ ش المحطة", items: [{ n: "صينية مكرونة بشاميل", q: 1 }], sub: 320, slot: SLOTS[2], day: "غدًا", repeat: 0, stage: 0, note: "", since: "منذ ٢٢ دقيقة", changed: "١١:٣٨ ص", reason: "" },
+      { id: 1045, name: "سارة منصور", phone: "012 3345 6678", address: "٤ ش النيل، الدور الأول", items: [{ n: "محشي مشكّل", q: 2 }, { n: "أم علي", q: 2 }], sub: 260, slot: SLOTS[1], day: "غدًا", repeat: 9, stage: 2, note: "", since: "منذ ساعة", changed: "١١:٢٠ ص", reason: "" },
+      { id: 1042, name: "خالد رمزي", phone: "010 9987 1123", address: "٢٢ ش الجمهورية", items: [{ n: "صينية مكرونة بشاميل", q: 2 }], sub: 640, slot: SLOTS[2], day: "غدًا", repeat: 2, stage: 3, note: "", since: "منذ ٣ ساعات", changed: "١٠:٤٠ ص", reason: "" },
+      { id: 1041, name: "هدى فتحي", phone: "011 2245 6612", address: "٩ ش الورش", items: [{ n: "ملوخية", q: 3 }], sub: 120, slot: SLOTS[0], day: "غدًا", repeat: 0, stage: -1, note: "", since: "أمس", changed: "أمس ٦:٤٠ م", reason: "الموعد ممتلئ" }
+    ],
+    items: [
+      { id: 1, name: "محشي مشكّل", desc: "ورق عنب وكوسة وفلفل", price: 95, sec: "الأطباق الرئيسية", on: true, max: 25, used: 18, prep: 20, days: [0, 1, 2, 3, 4, 5, 6], from: "١٠:٠٠ ص", to: "١٠:٠٠ م" },
+      { id: 2, name: "صينية مكرونة بشاميل", desc: "تكفي أربعة أشخاص", price: 320, sec: "الأطباق الرئيسية", on: true, max: 10, used: 3, prep: 40, days: [0, 1, 2, 3, 4, 5, 6], from: "١٠:٠٠ ص", to: "١٠:٠٠ م" },
+      { id: 3, name: "ملوخية", desc: "", price: 40, sec: "جانبي وحلويات", on: true, max: 0, used: 0, prep: 10, days: [0, 1, 2, 3, 4, 5, 6], from: "١٠:٠٠ ص", to: "١٠:٠٠ م" },
+      { id: 4, name: "أم علي", desc: "", price: 35, sec: "جانبي وحلويات", on: false, max: 0, used: 0, prep: 5, days: [0, 1, 2, 3, 4, 5, 6], from: "١٠:٠٠ ص", to: "١٠:٠٠ م" },
+      { id: 5, name: "كركديه ساقع", desc: "", price: 25, sec: "المشروبات", on: true, max: 0, used: 0, prep: 2, days: [0, 1, 2, 3, 4, 5, 6], from: "١٠:٠٠ ص", to: "١٠:٠٠ م" }
+    ]
+  };
+
+  patch = (id, f) => this.setState(s => ({ orders: s.orders.map(o => o.id === id ? { ...o, ...f(o), changed: "الآن" } : o) }));
+  setF = (k, v) => this.setState(s => ({ form: { ...s.form, [k]: v }, formErr: { ...s.formErr, [k]: false } }));
+  moveItem = (id, d) => this.setState(s => {
+    const a = [...s.items], i = a.findIndex(x => x.id === id), j = i + d;
+    if (j < 0 || j >= a.length) return null;
+    [a[i], a[j]] = [a[j], a[i]];
+    return { items: a, sheet: null };
+  });
+
+  priceProblem = raw => {
+    const t = String(raw).trim();
+    if (!t) return "اكتب سعر الصنف";
+    if (/[^0-9٠-٩\s]/.test(t)) return "السعر أرقام فقط، بدون حروف أو رموز";
+    const n = Number(EN(t));
+    if (!n) return "السعر يجب أن يكون أكبر من صفر";
+    return "";
+  };
+
+  save = () => {
+    const f = this.state.form;
+    const pMsg = this.priceProblem(f.price);
+    const err = { name: !String(f.name).trim(), price: !!pMsg, priceMsg: pMsg };
+    if (err.name || err.price) return this.setState({ formErr: err });
+    const clean = { ...f, price: Number(EN(f.price)) || 0, max: Number(EN(f.max)) || 0, prep: Number(EN(f.prep)) || 0 };
+    this.setState(s => ({
+      items: f.id ? s.items.map(i => i.id === f.id ? clean : i) : [...s.items, { ...clean, id: Date.now(), used: 0 }],
+      form: null, adv: false
+    }));
+  };
+
+  copyLink = () => {
+    this.setState({ copied: true });
+    clearTimeout(this._c);
+    this._c = setTimeout(() => this.setState({ copied: false }), 4000);
+  };
+
+  dialogKey(s) {
+    return s.sheet ? "sheet" : s.form ? "form" : s.reject ? "reject"
+      : (s.back !== null && s.back !== undefined) ? "back" : s.archive ? "archive" : "";
+  }
+  closeAll = () => this.setState({ sheet: null, form: null, reject: null, back: null, archive: null });
+  focusables = d => Array.prototype.slice.call(d.querySelectorAll('button, input, textarea, select, [tabindex]:not([tabindex="-1"])')).filter(x => !x.disabled && x.offsetParent);
+
+  onKey = e => {
+    if (!this.dialogKey(this.state)) return;
+    const d = document.querySelector("[data-dialog]");
+    if (!d) return;
+    if (e.key === "Escape") { e.preventDefault(); return this.closeAll(); }
+    if (e.key !== "Tab") return;
+    const els = this.focusables(d);
+    if (!els.length) return;
+    const first = els[0], last = els[els.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  };
+
+  componentDidMount() { document.addEventListener("keydown", this.onKey); }
+
+  componentDidUpdate(_p, prev) {
+    const was = this.dialogKey(prev), now = this.dialogKey(this.state);
+    if (now && now !== was) {
+      this._returnTo = document.activeElement;
+      requestAnimationFrame(() => {
+        const d = document.querySelector("[data-dialog]");
+        if (!d) return;
+        const els = this.focusables(d);
+        (els[0] || d).focus();
+      });
+    } else if (!now && was && this._returnTo && this._returnTo.focus) {
+      this._returnTo.focus();
+      this._returnTo = null;
+    }
+  }
+
+  startReject = (id, reason) => {
+    clearTimeout(this._u);
+    this.setState({ reject: null, undo: { id, reason, prev: (this.state.orders.find(o => o.id === id) || {}).stage } });
+    this._u = setTimeout(() => {
+      const u = this.state.undo;
+      if (!u) return;
+      this.setState({ undo: null });
+      this.patch(u.id, () => ({ stage: -1, reason: u.reason }));
+    }, 10000);
+  };
+  cancelReject = () => { clearTimeout(this._u); this.setState({ undo: null }); };
+
+  componentWillUnmount() {
+    clearTimeout(this._c);
+    clearTimeout(this._u);
+    document.removeEventListener("keydown", this.onKey);
+  }
+
+  renderVals() {
+    const st = this.state, D = st.device === "desktop", demo = st.demo;
+    const brand = this.props.brandName ?? "مطبخ ست الكل";
+    const cur = this.props.currency ?? "جنيه";
+    const chip = (on) => ({ bg: on ? "#DCEDE4" : "#FFF", fg: on ? "#0C4534" : "#4A5A52", border: on ? "#12604A" : "#DDE3E0" });
+    const cutoff = demo === "cutoff";
+    const paused = demo === "paused" || !st.open || cutoff;
+    const offline = demo === "offline";
+
+    let orders = st.items && demo === "noOrders" ? [] : st.orders;
+    if (demo === "noOrders" || demo === "noItems") orders = [];
+    if (demo === "firstOrder") orders = [st.orders[0]];
+    const items = demo === "noItems" ? [] : st.items;
+
+    const q = st.query.trim(), qd = EN(q);
+    let shown = orders.filter(o => {
+      if (st.filter === "rej" && o.stage !== -1) return false;
+      if (st.filter.startsWith("p") && o.stage !== Number(st.filter[1])) return false;
+      if (!q) return true;
+      if (o.name.indexOf(q) >= 0) return true;
+      if (!qd) return false;
+      if (PHONE_OK(qd)) return EN(o.phone) === qd;
+      return EN(o.phone).indexOf(qd) >= 0 || String(o.id).indexOf(qd) >= 0;
+    });
+
+    const totalOf = o => o.sub + FEE;
+    const pending = orders.filter(o => o.stage === 0);
+    const confirmed = orders.filter(o => o.stage >= 1);
+    const pendTomorrow = orders.filter(o => o.stage === 0);
+
+    const groupTitles = [["ينتظر الموافقة", o => o.stage === 0], ["جارية الآن", o => o.stage >= 1 && o.stage <= 4], ["منتهية", o => o.stage === 5 || o.stage === -1]];
+    const orderGroups = groupTitles.map(([title, fn]) => {
+      const list = shown.filter(fn);
+      return {
+        title, count: COUNT(list.length, "لا طلبات", "طلب واحد", "طلبان", "طلبات"),
+        orders: list.map(o => {
+          const rej = o.stage === -1, done = o.stage === 5;
+          const accent = rej ? "#C62F2F" : o.stage === 0 ? "#F2A20C" : done ? "#12604A" : "#2563C9";
+          return {
+            id: AR(o.id), name: o.name, phone: o.phone, address: o.address, since: o.since,
+            fee: AR(FEE) + " " + cur, total: AR(totalOf(o)), slot: o.slot, lastChange: o.changed,
+            note: !!o.note, noteText: o.note, repeat: o.repeat > 2, repeatCount: COUNT(o.repeat, "", "طلب واحد", "طلبان", "طلبات"),
+            items: o.items.map(i => ({ name: i.n, qty: AR(i.q) })),
+            statusLabel: rej ? "مرفوض" : STAGES[o.stage], accent,
+            chipBg: rej ? "#FBE3E3" : o.stage === 0 ? "#FDF0D6" : done ? "#DCEDE4" : "#E0EAFB",
+            chipFg: rej ? "#8E1F1F" : o.stage === 0 ? "#8A5A00" : done ? "#0C4534" : "#123C86",
+            isPending: o.stage === 0, isRunning: o.stage >= 1 && o.stage <= 4, isDone: done, isRejected: rej,
+            rejectReason: o.reason, nextLabel: NEXT[o.stage] || "",
+            failed: demo === "updateFailed" && o.stage >= 1 && o.stage <= 4,
+            offline, canAct: !offline, actDisabled: offline, actCursor: offline ? "not-allowed" : "pointer",
+            acceptBg: offline ? "#DDE3E0" : "#12604A", acceptFg: offline ? "#8E9B95" : "#FFF",
+            rejectBg: offline ? "#DDE3E0" : "#C62F2F", rejectFg: offline ? "#8E9B95" : "#FFF",
+            backBorder: offline ? "#E6EAE8" : "#DDE3E0", backFg: offline ? "#8E9B95" : "#4A5A52",
+            retry: () => this.setState({ demo: "normal" }),
+            accept: () => { if (!offline) this.patch(o.id, () => ({ stage: 1 })); },
+            askReject: () => { if (!offline) this.setState({ reject: o.id, rejectIdx: 0, rejectNote: "" }); },
+            next: () => { if (!offline) this.patch(o.id, x => ({ stage: Math.min(5, x.stage + 1) })); },
+            askBack: () => { if (!offline) this.setState({ back: o.id }); }
+          };
+        })
+      };
+    }).filter(g => g.orders.length);
+
+    const rejOrder = st.orders.find(o => o.id === st.reject);
+    const reasonText = st.rejectIdx === 4 ? (st.rejectNote || "…") : REASONS[st.rejectIdx];
+
+    const prepSrc = orders.filter(o => o.stage >= 1);
+    const maybeSrc = orders.filter(o => o.stage === 0);
+    const agg = src => { const m = {}; src.forEach(o => o.items.forEach(i => { m[i.n] = (m[i.n] || 0) + i.q; })); return Object.entries(m).map(([name, q]) => ({ name, qty: AR(q) })); };
+
+    const capacity = [["١٠ ص – ١٢ م", 3, 10], ["١٢ م – ٣ م", demo === "slotsFull" ? 10 : 8, 10], ["٣ م – ٦ م", demo === "slotsFull" ? 8 : 4, 8]];
+
+    const rows = [
+      { name: "سارة منصور", phone: "012 3345 6678", orders: 9, last: "٨ أغسطس", avg: 210, top: "محشي مشكّل" },
+      { name: "منى عبد الله", phone: "010 2234 4456", orders: 4, last: "٩ أغسطس", avg: 265, top: "محشي مشكّل" },
+      { name: "خالد رمزي", phone: "010 9987 1123", orders: 2, last: "٧ أغسطس", avg: 340, top: "صينية مكرونة بشاميل" },
+      { name: "أحمد شوقي", phone: "011 5567 8890", orders: 1, last: "٩ أغسطس", avg: 360, top: "صينية مكرونة بشاميل" }
+    ].sort((a, b) => (a[st.sortKey] > b[st.sortKey] ? 1 : -1) * st.sortDir);
+
+    const settingsDefs = [
+      ["restaurant", "المطعم", brand, [["الاسم", brand], ["الشعار", "شعار نصي"], ["رابط الطلب", "order.link/" + "matam"]]],
+      ["slots", "مواعيد التوصيل والسعة", AR(3) + " فترات", capacity.map(([n, u, c]) => [n, AR(u) + " من " + AR(c)])],
+      ["money", "الحد الأدنى والعملة والدفع", cur, [["الحد الأدنى للطلب", AR(60) + " " + cur], ["العملة", cur], ["طريقة الدفع", "كاش عند الاستلام"]]],
+      ["cutoff", "إغلاق طلبات الغد", "١٠:٠٠ م", [["وقت الإغلاق", "١٠:٠٠ م"]]],
+      ["notif", "الإشعارات", DEV_NOTIF[st.devNotif].state, [["تنبيه داخل اللوحة", "يعمل ما دامت اللوحة مفتوحة"], ["إشعار الجهاز", DEV_NOTIF[st.devNotif].state]]]
+    ];
+
+    const f = st.form;
+    return {
+      brandName: brand, cur, today: "الأحد ٩ أغسطس", noop: () => {},
+      isDesktop: D, isMobile: !D,
+      setDesktop: () => this.setState({ device: "desktop" }),
+      setMobile: () => this.setState({ device: "mobile", mw: 390 }),
+      setMobileSmall: () => this.setState({ device: "mobile", mw: 360 }),
+      dBg: D ? "#12604A" : "transparent", dFg: D ? "#FFF" : "#4A5A52",
+      mBg: !D && st.mw === 390 ? "#12604A" : "transparent", mFg: !D && st.mw === 390 ? "#FFF" : "#4A5A52",
+      sBg: !D && st.mw === 360 ? "#12604A" : "transparent", sFg: !D && st.mw === 360 ? "#FFF" : "#4A5A52",
+      frameW: D ? "1440px" : st.mw + "px", frameH: D ? "920px" : "844px", frameR: D ? "20px" : "38px",
+      headPad: D ? "18px 28px" : "40px 18px 14px",
+      barPad: D ? "16px 28px" : "14px 16px",
+      bodyPad: D ? "22px 28px 36px" : "16px 14px 24px",
+      cardCols: D ? "repeat(2,1fr)" : "1fr",
+      demos: [["normal", "عادي"], ["noItems", "لا أصناف"], ["noOrders", "لا طلبات"], ["firstOrder", "أول طلب"], ["paused", "متوقفة"], ["cutoff", "بعد وقت الإغلاق"], ["slotsFull", "المواعيد ممتلئة"], ["offline", "بدون اتصال"], ["updateFailed", "فشل التحديث"]].map(([k, name]) => ({
+        name, pick: () => this.setState({ demo: k, tab: k === "noItems" ? "menu" : "orders", filter: "all" }),
+        bg: demo === k ? "#DCEDE4" : "transparent", fg: demo === k ? "#0C4534" : "#4A5A52"
+      })),
+      tabs: [["orders", "الطلبات"], ["prep", "التحضير"], ["menu", "القائمة"], ["settings", "الإعدادات"]].map(([k, name]) => ({
+        name, pick: () => this.setState({ tab: k }), selected: st.tab === k ? "true" : "false",
+        color: st.tab === k ? "#12604A" : "#5F6F67", line: st.tab === k ? "#12604A" : "transparent",
+        hasBadge: k === "orders" && pending.length > 0, badge: AR(pending.length)
+      })),
+      mobileTabs: [["orders", "الطلبات"], ["prep", "التحضير"], ["menu", "القائمة"], ["more", "المزيد"]].map(([k, name]) => ({
+        name, pick: () => this.setState({ tab: k }), selected: st.tab === k ? "true" : "false",
+        color: st.tab === k ? "#12604A" : "#5F6F67", line: st.tab === k ? "#12604A" : "transparent",
+        hasBadge: k === "orders" && pending.length > 0, badge: AR(pending.length)
+      })),
+      tabOrders: st.tab === "orders", tabPrep: st.tab === "prep", tabMenu: st.tab === "menu",
+      tabSettings: st.tab === "settings", tabCustomers: st.tab === "customers", tabMore: st.tab === "more",
+      custColor: st.tab === "customers" ? "#12604A" : "#5F6F67",
+      goCustomers: () => this.setState({ tab: "customers" }), goSettings: () => this.setState({ tab: "settings" }),
+
+      openLabel: cutoff ? "طلبات الغد مغلقة" : paused ? "الطلبات متوقفة" : "الطلبات مفتوحة",
+      barBg: cutoff ? "#F1F3F2" : paused ? "#FBE3E3" : "#FFF",
+      barBorder: cutoff ? "#C7D0CB" : paused ? "#F0C9C9" : "#DDE3E0",
+      barChipBg: paused ? "#FFF" : "#DCEDE4",
+      barChipFg: cutoff ? "#3C4A43" : paused ? "#8E1F1F" : "#0C4534",
+      barChipBorder: cutoff ? "#98A5A0" : paused ? "#C62F2F" : "#12604A",
+      cutoffLine: cutoff ? "تُفتح تلقائيًا صباحًا لطلبات اليوم التالي" : paused ? "لن يستطيع أحد الطلب حتى تفتحها" : "يستطيع العملاء الطلب للغد حتى ١٠:٠٠ مساءً",
+      showPause: !cutoff,
+      pauseLabel: paused ? "فتح الطلبات" : "إيقاف الطلبات",
+      pauseColor: paused ? "#12604A" : "#C62F2F", pauseBorder: paused ? "#12604A" : "#C62F2F",
+      toggleOpen: () => this.setState(s => ({ open: !(s.demo === "paused" || !s.open), demo: s.demo === "paused" ? "normal" : s.demo })),
+      copyLink: this.copyLink, copied: st.copied,
+      offline, retry: () => this.setState({ demo: "normal" }),
+
+      hasPendingAlert: pending.length > 0 && st.tab === "orders",
+      pendingAlertText: pending.length === 0 ? "لا توجد طلبات تنتظر الموافقة"
+        : pending.length === 1 ? "لديك طلب واحد ينتظر الموافقة"
+        : pending.length === 2 ? "لديك طلبان ينتظران الموافقة"
+        : "لديك " + AR(pending.length) + " طلبات تنتظر الموافقة",
+      filterPending: () => this.setState({ filter: "p0" }),
+      pausedBanner: paused && !cutoff, slotsFull: demo === "slotsFull",
+      cutoffPassed: cutoff,
+
+      query: st.query, setQuery: e => this.setState({ query: e.target.value }),
+      filters: FILTERS.map(([k, name]) => {
+        const n = k === "all" ? orders.length : k === "rej" ? orders.filter(o => o.stage === -1).length : orders.filter(o => o.stage === Number(k[1])).length;
+        return { name, count: AR(n), selected: st.filter === k ? "true" : "false", pick: () => this.setState({ filter: k }), ...chip(st.filter === k) };
+      }),
+      orderGroups, noOrders: st.tab === "orders" && shown.length === 0,
+      emptyOrdersTitle: demo === "noOrders" ? "لا توجد طلبات للغد حتى الآن" : "لا يوجد طلب بهذا الوصف",
+
+      showSchedule: orders.length > 0,
+      schedule: capacity.map(([name, used, cap]) => ({
+        name, label: AR(used) + " من " + AR(cap), pct: Math.round(used / cap * 100) + "%",
+        color: used >= cap ? "#C62F2F" : used / cap > 0.7 ? "#F2A20C" : "#12604A",
+        textColor: used >= cap ? "#8E1F1F" : used / cap > 0.7 ? "#8A5A00" : "#0C4534"
+      })),
+      statPending: AR(pending.length), statConfirmed: AR(confirmed.length),
+      statConfirmedSum: AR(confirmed.reduce((a, o) => a + totalOf(o), 0)),
+      statPendingSum: AR(pendTomorrow.reduce((a, o) => a + totalOf(o), 0)),
+
+      prepUpdated: st.prepUpdated, printList: () => window.print(),
+      prep: agg(prepSrc), prepEmpty: prepSrc.length === 0,
+      maybe: agg(maybeSrc), hasMaybe: maybeSrc.length > 0,
+
+      noItems: items.length === 0, hasItems: items.length > 0,
+      suggestedSections: ["الأطباق الرئيسية", "جانبي وحلويات", "المشروبات", "الحلويات"].map(name => ({
+        name, add: () => this.setState(s => ({ sections: [...s.sections, { id: Date.now(), name, hidden: false }] }))
+      })),
+      addSection: () => this.setState(s => ({ sections: [...s.sections, { id: Date.now(), name: "قسم جديد", hidden: false }] })),
+      sections: st.sections.map((sec, i) => ({
+        name: sec.name, color: sec.hidden ? "#5F6F67" : "#17201C",
+        rename: e => { const v = e.target.value; this.setState(s => ({ sections: s.sections.map(x => x.id === sec.id ? { ...x, name: v } : x) })); },
+        toggle: () => this.setState(s => ({ sections: s.sections.map(x => x.id === sec.id ? { ...x, hidden: !x.hidden } : x) })),
+        hLabel: sec.hidden ? "مخفي" : "ظاهر",
+        hBg: sec.hidden ? "#F1F3F2" : "#DCEDE4", hFg: sec.hidden ? "#4A5A52" : "#0C4534", hBorder: sec.hidden ? "#DDE3E0" : "#12604A",
+        up: () => this.setState(s => { const a = [...s.sections]; if (i === 0) return null; [a[i], a[i - 1]] = [a[i - 1], a[i]]; return { sections: a }; }),
+        down: () => this.setState(s => { const a = [...s.sections]; if (i === a.length - 1) return null; [a[i], a[i + 1]] = [a[i + 1], a[i]]; return { sections: a }; })
+      })),
+      menuItems: items.map(m => {
+        const capped = m.max > 0 && m.used >= m.max;
+        const off = !m.on || capped;
+        return {
+          name: m.name, sec: m.sec, price: AR(m.price), off,
+          hasCap: m.max > 0,
+          capLine: capped ? "بلغ الحد اليومي (" + AR(m.max) + ") · متوقف للغد فقط" : "تم طلب " + AR(m.used) + " من " + AR(m.max) + " للغد · متبقي " + AR(m.max - m.used),
+          capColor: capped ? "#8E1F1F" : m.used / m.max > 0.7 ? "#8A5A00" : "#4A5A52",
+          swLabel: m.on ? "متاح" : "غير متاح",
+          swBg: m.on ? "#DCEDE4" : "#F1F3F2", swFg: m.on ? "#0C4534" : "#4A5A52",
+          swBorder: m.on ? "#12604A" : "#98A5A0", dot: m.on ? "#12604A" : "#98A5A0",
+          toggle: () => this.setState(s => ({ items: s.items.map(x => x.id === m.id ? { ...x, on: !x.on } : x) })),
+          up: () => this.moveItem(m.id, -1), down: () => this.moveItem(m.id, 1),
+          edit: () => this.setState({ form: { ...m, price: String(m.price), max: String(m.max || ""), prep: String(m.prep || "") }, adv: false, formErr: {} }),
+          menu: () => this.setState({ sheet: m.id })
+        };
+      }),
+      addItem: () => this.setState({ form: { id: 0, name: "", desc: "", price: "", sec: (st.sections[0] || {}).name || "", on: true, max: "", used: 0, prep: "", days: [0, 1, 2, 3, 4, 5, 6], from: "١٠:٠٠ ص", to: "١٠:٠٠ م" }, adv: false, formErr: {} }),
+
+      sheetOpen: !!st.sheet, sheetName: (st.items.find(i => i.id === st.sheet) || {}).name || "",
+      closeSheet: () => this.setState({ sheet: null }),
+      sheetEdit: () => { const m = st.items.find(i => i.id === st.sheet); this.setState({ sheet: null, form: { ...m, price: String(m.price), max: String(m.max || ""), prep: String(m.prep || "") }, adv: false, formErr: {} }); },
+      sheetUp: () => this.moveItem(st.sheet, -1), sheetDown: () => this.moveItem(st.sheet, 1),
+
+      formOpen: !!f, formTitle: f && f.id ? "تعديل صنف" : "إضافة صنف",
+      dName: f ? f.name : "", dDesc: f ? f.desc : "", dPrice: f ? f.price : "",
+      dMax: f ? f.max : "", dPrep: f ? f.prep : "", dFrom: f ? f.from : "", dTo: f ? f.to : "",
+      dNameErr: !!st.formErr.name, dPriceErr: !!st.formErr.price,
+      dPriceMsg: st.formErr.priceMsg || "اكتب سعر الصنف",
+      dNameBorder: st.formErr.name ? "#C62F2F" : "#DDE3E0", dPriceBorder: st.formErr.price ? "#C62F2F" : "#DDE3E0",
+      setDName: e => this.setF("name", e.target.value),
+      setDDesc: e => this.setF("desc", e.target.value),
+      setDPrice: e => this.setF("price", e.target.value),
+      setDMax: e => this.setF("max", e.target.value),
+      setDPrep: e => this.setF("prep", e.target.value),
+      setDFrom: e => this.setF("from", e.target.value),
+      setDTo: e => this.setF("to", e.target.value),
+      secChips: st.sections.map(sec => ({ name: sec.name, pick: () => this.setF("sec", sec.name), ...chip(f && f.sec === sec.name) })),
+      weekDays: DAYS.map((name, i) => ({
+        name, toggle: () => this.setState(s => ({ form: { ...s.form, days: s.form.days.includes(i) ? s.form.days.filter(d => d !== i) : [...s.form.days, i] } })),
+        ...chip(f && f.days.includes(i))
+      })),
+      saveItem: this.save, closeForm: () => this.setState({ form: null, adv: false }),
+      canArchive: !!(f && f.id),
+      askArchive: () => this.setState(s => ({ archive: s.form })),
+      archiveOpen: !!st.archive, archiveName: st.archive ? st.archive.name : "",
+      confirmArchive: () => this.setState(s => ({
+        items: s.items.filter(i => i.id !== s.archive.id),
+        archived: [...s.archived, s.items.find(i => i.id === s.archive.id) || s.archive],
+        archive: null, form: null
+      })),
+      cancelArchive: () => this.setState({ archive: null }),
+      hasArchived: st.archived.length > 0,
+      archivedItems: st.archived.map(a => ({
+        name: a.name, sec: a.sec, price: AR(a.price),
+        restore: () => this.setState(s => ({ items: [...s.items, a], archived: s.archived.filter(x => x.id !== a.id) }))
+      })),
+
+      rejectOpen: !!rejOrder, rejectName: rejOrder ? rejOrder.name : "",
+      rejectReasons: REASONS.map((name, i) => ({
+        name, pick: () => this.setState({ rejectIdx: i }), ...chip(st.rejectIdx === i),
+        dot: st.rejectIdx === i ? "#12604A" : "#FFF", dotBorder: st.rejectIdx === i ? "#12604A" : "#C7D0CB"
+      })),
+      otherReason: st.rejectIdx === 4, rejectNote: st.rejectNote,
+      setRejectNote: e => this.setState({ rejectNote: e.target.value }),
+      rejectMessage: "نأسف، لم نتمكن من تنفيذ طلبك رقم " + (rejOrder ? AR(rejOrder.id) : "") + ". السبب: " + reasonText + ".",
+      confirmReject: () => this.startReject(st.reject, reasonText),
+      closeReject: () => this.setState({ reject: null }),
+
+      undoOpen: !!st.undo,
+      undoText: "سيتم رفض الطلب وإبلاغ العميل خلال ١٠ ثوانٍ.",
+      undoReject: this.cancelReject,
+
+
+      backOpen: st.back !== null && st.back !== undefined,
+      backTo: (() => { const o = st.orders.find(x => x.id === st.back); return o ? STAGES[Math.max(0, o.stage - 1)] : ""; })(),
+      confirmBack: () => { const id = st.back; this.setState({ back: null }); this.patch(id, x => ({ stage: Math.max(0, x.stage - 1) })); },
+      cancelBack: () => this.setState({ back: null }),
+
+      settingsGroups: settingsDefs.map(([k, name, summary, rows2]) => ({
+        name, summary, open: st.settingsOpen === k, isNotif: k === "notif",
+        expanded: st.settingsOpen === k ? "true" : "false",
+        chevron: st.settingsOpen === k ? "▴" : "▾",
+        toggle: () => this.setState(s => ({ settingsOpen: s.settingsOpen === k ? "" : k })),
+        rows: rows2.map(([label, value]) => ({ label, value }))
+      })),
+      testNotif: () => this.setState(s => ({ notif: s.notif + 1 })),
+      devState: DEV_NOTIF[st.devNotif].state, devText: DEV_NOTIF[st.devNotif].text,
+      devAction: DEV_NOTIF[st.devNotif].action, devHasAction: !!DEV_NOTIF[st.devNotif].action,
+      devBg: DEV_NOTIF[st.devNotif].bg, devBorder: DEV_NOTIF[st.devNotif].border, devFg: DEV_NOTIF[st.devNotif].fg,
+      devStates: Object.keys(DEV_NOTIF).map(k => ({
+        name: DEV_NOTIF[k].state, pick: () => this.setState({ devNotif: k }), ...chip(st.devNotif === k)
+      })),
+
+      columns: [["name", "الاسم"], ["phone", "رقم الهاتف"], ["orders", "عدد الطلبات"], ["last", "آخر طلب"], ["avg", "متوسط الطلب"], ["top", "الأكثر طلبًا"]].map(([key, label]) => ({
+        label, arrow: st.sortKey === key ? (st.sortDir === 1 ? "↑" : "↓") : "",
+        color: st.sortKey === key ? "#12604A" : "#5F6F67",
+        sort: () => this.setState(s => ({ sortKey: key, sortDir: s.sortKey === key ? -s.sortDir : -1 }))
+      })),
+      customers: rows.map(r => ({
+        name: r.name, phone: r.phone, orders: AR(r.orders),
+        ordersPhrase: COUNT(r.orders, "لا طلبات", "طلب واحد", "طلبان", "طلبات"),
+        last: r.last, avg: AR(r.avg) + " " + cur, top: r.top
+      })),
+
+      notif: st.notif > 0,
+      notifTitle: st.notif === 1 ? "طلب جديد وصل" : st.notif === 2 ? "طلبان جديدان وصلا" : AR(st.notif) + " طلبات جديدة وصلت",
+      notifSub: "يبقى ظاهرًا حتى تفتح الطلبات.",
+      openNotif: () => this.setState({ notif: 0, tab: "orders", filter: "p0", searchOpen: false }),
+
+      searchOpen: st.searchOpen,
+      toggleSearch: () => this.setState(s => ({ searchOpen: !s.searchOpen })),
+      searchSummary: st.filter === "all" && !st.query ? "" : "· مُفعّل",
+
+      loggedOut: !st.logged,
+      logout: () => this.setState({ logged: false, tab: "orders" }),
+      email: st.email, pass: st.pass,
+      setEmail: e => this.setState(s => ({ email: e.target.value, loginErr: { ...s.loginErr, email: "" } })),
+      setPass: e => this.setState(s => ({ pass: e.target.value, loginErr: { ...s.loginErr, pass: "" } })),
+      passType: st.showPass ? "text" : "password",
+      showPassLabel: st.showPass ? "إخفاء" : "إظهار",
+      toggleShowPass: () => this.setState(s => ({ showPass: !s.showPass })),
+      emailErr: !!st.loginErr.email, emailErrText: st.loginErr.email,
+      passErr: !!st.loginErr.pass, passErrText: st.loginErr.pass,
+      emailBorder: st.loginErr.email ? "#C62F2F" : "#DDE3E0",
+      passBorder: st.loginErr.pass ? "#C62F2F" : "#DDE3E0",
+      login: () => {
+        const err = {};
+        if (!st.email.trim()) err.email = "اكتب بريدك الإلكتروني";
+        else if (st.email.indexOf("@") < 0) err.email = "البريد ناقص علامة @";
+        if (!st.pass) err.pass = "اكتب كلمة المرور";
+        else if (st.pass.length < 6) err.pass = "كلمة المرور ٦ أحرف على الأقل";
+        if (err.email || err.pass) return this.setState({ loginErr: err });
+        this.setState({ logged: true, loginErr: {}, pass: "" });
+      }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

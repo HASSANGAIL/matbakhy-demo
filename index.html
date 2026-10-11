@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دفتر طلبات مطبخك — ديمو</title>
+<meta name="description" content="ديمو تفاعلي: مطبخك على رابط واحد، وطلباتك في لوحة واحدة.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --green:#12604A; --deep:#0C4534; --mint:#DCEDE4; --paper:#F4F1EA; --ink:#17201C; --muted:#5F6F67; --saffron:#E8A33D; }
+  * { box-sizing:border-box; letter-spacing:0; }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:'IBM Plex Sans Arabic',system-ui,sans-serif; }
+  .hero { position:relative; min-height:62vh; display:flex; align-items:flex-end; color:#fff; overflow:hidden; background:var(--deep); }
+  .hero .ph { position:absolute; inset:0; background:url('https://images.unsplash.com/photo-1625683328243-92b63752a235?w=1800&q=80&auto=format&fit=crop') center 40%/cover no-repeat; }
+  .hero .sh { position:absolute; inset:0; background:linear-gradient(0deg, rgba(8,40,30,.97) 8%, rgba(8,40,30,.55) 55%, rgba(8,40,30,.15)); }
+  .hero .in { position:relative; width:100%; max-width:1080px; margin:0 auto; padding:48px 20px 44px; }
+  .tag { display:inline-block; background:var(--saffron); color:var(--deep); font-weight:700; border-radius:999px; padding:6px 16px; font-size:14px; }
+  h1 { font-family:'Baloo Bhaijaan 2',sans-serif; font-size:clamp(40px,7vw,76px); line-height:1.15; margin:16px 0 10px; }
+  .hero p { font-size:clamp(17px,2.4vw,22px); line-height:1.8; color:#CFE5DA; margin:0; max-width:640px; }
+  main { max-width:1080px; margin:0 auto; padding:36px 20px 60px; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; }
+  a.card { display:flex; gap:18px; align-items:center; background:#fff; border-radius:24px; padding:22px; text-decoration:none; color:inherit; box-shadow:0 12px 34px rgba(12,69,52,.10); border:2px solid transparent; transition:border-color .15s, transform .15s; }
+  a.card:hover { border-color:var(--green); transform:translateY(-2px); }
+  a.card:focus-visible { outline:3px solid var(--ink); outline-offset:3px; }
+  .ic { width:64px; height:64px; flex:none; border-radius:18px; background:var(--mint); display:flex; align-items:center; justify-content:center; }
+  .t { font-family:'Baloo Bhaijaan 2',sans-serif; font-size:24px; font-weight:800; color:var(--deep); }
+  .d { font-size:15px; color:var(--muted); line-height:1.7; margin-top:2px; }
+  .go { margin-inline-start:auto; color:var(--green); font-size:26px; font-weight:700; }
+  .how { margin-top:34px; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+  .how div { background:#fff; border-radius:18px; padding:16px 18px; font-size:15px; line-height:1.8; color:var(--muted); }
+  .how b { color:var(--deep); display:block; font-size:16px; }
+  .fine { margin-top:30px; font-size:13px; color:#8A958F; line-height:1.8; }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="ph" role="img" aria-label="طبق محشي ورق عنب وكرنب"></div><div class="sh"></div>
+    <div class="in">
+      <span class="tag">ديمو تفاعلي · قبل الإطلاق</span>
+      <h1>دفتر طلبات مطبخك</h1>
+      <p>كل طلبات المطبخ البيتي في رابط واحد، ولوحة واحدة على الموبايل. جرّب الناحيتين بنفسك.</p>
+    </div>
+  </header>
+  <main>
+    <div class="cards">
+      <a class="card" href="customer.html">
+        <div class="ic"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#12604A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></div>
+        <div><div class="t">أنا العميلة</div><div class="d">افتح قائمة «مطبخ ست الكل» واطلب.</div></div>
+        <span class="go" aria-hidden="true">←</span>
+      </a>
+      <a class="card" href="owner.html">
+        <div class="ic"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#12604A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></div>
+        <div><div class="t">أنا صاحبة المطبخ</div><div class="d">شوف الطلبات وورقة تحضير بكرة.</div></div>
+        <span class="go" aria-hidden="true">←</span>
+      </a>
+    </div>
+    <div class="how">
+      <div><b>الأزرار اللي فوق الشاشة</b>بتغيّر الحالة: سلة فاضية، الطلبات متوقفة، الفترة مليانة…</div>
+      <div><b>جرّب «تابع طلبك»</b>عشان تشوف العميلة بتتابع طلبها خطوة بخطوة.</div>
+      <div><b>في لوحة المطبخ</b>جرّب تبويب «التحضير» وزرار «حاسوب» للشاشة الكبيرة.</div>
+    </div>
+    <p class="fine">ده نموذج تصميم تفاعلي للعرض، مش التطبيق الحي: البيانات تجريبية، ومفيش طلبات حقيقية بتتبعت، وبعض الشاشات بتمثّل الرؤية القادمة. صور الأكل من Unsplash.</p>
+  </main>
+</body>
+</html>
